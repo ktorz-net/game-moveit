@@ -1,7 +1,3 @@
-[ros2]
-discovery_range = "SUBNET"
-domain_id = "00"
-
 [webpages]
-module = "mb6-space"
-target = "../imt-mobisyst-site"
+module = "hacka-moveit"
+target = "../ktorz-net-site"

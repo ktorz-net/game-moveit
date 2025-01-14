@@ -1,0 +1,25 @@
+[build-system]
+requires = ["flit_core >= 3.4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "game-moveIt"
+version = "0.0.1"
+authors = [
+  { name="Guillaume Lozenguez", email="guillaume.lozenguez@imt-nord-europe.fr" },
+]
+description = "An Hackable Games' based on Multi-path planing problem"
+dependencies = [ "hackagames" ]
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[tool.flit.module]
+name = "hacka.games.moveit"
+
+[project.urls]
+Homepage = "https://ktorz-net.github.io/hacka-moveit"

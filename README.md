@@ -1,30 +1,23 @@
-# HackaMove
+# Game-MoveIt
 
-An HackaGames game based on the multi-paths planning problem.
+An _HackaGames_ game based on the multi-paths planning problem.
 
 
 ## Install:
 
-_mb6-space_ can be cloned and configured accordingly to ROS2.
-Also, the proposed command tools rely on a [toml](https://toml.io) based configuration file.
+_Hacka-MoveIt_ uses _pip_ for a local install. 
+The project relies on _HackaGames_ (including _hackaPy_, its python3 librairie).
 
 ```sh
-pip install toml toml-cli
-git clone https://github.com/imt-mobisyst/mb6-space.git
-cd mb6-space
-./bin/set-mb6-bashrc
-source ~/.bashrc
+git clone https://github.com/ktorz-net/hackagames.git
+pip install ./hackagames
+git clone https://github.com/ktorz-net/hacka-moveit.git
+pip install ./hacka-moveit
 ```
-
-The `set-mb6-bashrc` script adds lines into your `~/.bashrc` file to source `./bin/run-commands.bash` automatically in your shells.
 
 
 ## Get Stated:
 
-_mb6-space_ is a meta-package mainly including the documentation and some useful command tools.
-It is designed to be your ros-workspace.
-
-Connect to the [imt-mobisyst](https://imt-mobisyst.github.io/mb6-space) web pages for more information.
 
 
 ## Documentation

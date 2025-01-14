@@ -1,0 +1,41 @@
+# Submodules
+#-----------------
+
+
+# Generated
+#-----------------
+build/
+site/
+
+# Log and configs
+#-----------------
+*.log
+.vscode
+config.toml
+*~
+~*
+
+# Latex:
+#-----------------
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.run.xml
+*.spl
+*.synctex.gz
+*.tex~
+
+# python:
+#-----------------
+*.pyc
+__pycache__/
+
+# c/c++:
+#-----------------
+*.o
+
