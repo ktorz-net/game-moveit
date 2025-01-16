@@ -1,10 +1,8 @@
 """
 Test - MoveIt Hexagonal-cells' board Class
 """
-import sys
 
-sys.path.insert( 1, __file__.split('gameMoveIt')[0] )
-from ... import core as hk
+import hacka.pylib as hk
 
 import random
 

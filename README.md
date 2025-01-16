@@ -5,16 +5,15 @@ An _HackaGames_ game based on the multi-paths planning problem.
 
 ## Install:
 
-_Hacka-MoveIt_ uses _pip_ for a local install. 
-The project relies on _HackaGames_ (including _hackaPy_, its python3 librairie).
+_MoveIt_ uses _pip_ for a local install. 
+The project relies on _HackaGames_ (including _hacka.pylib_, its python3 librairie).
 
 ```sh
 git clone https://github.com/ktorz-net/hackagames.git
 pip install ./hackagames
-git clone https://github.com/ktorz-net/hacka-moveit.git
-pip install ./hacka-moveit
+git clone https://github.com/ktorz-net/game-moveit.git
+pip install ./game-moveit
 ```
-
 
 ## Get Stated:
 
@@ -31,8 +30,7 @@ mkdocs serve
 ```
 
 You can then refer to the [http://127.0.0.1:8000/](documentation).
-
-This documentation is also on line: [https://ktorz-net.github.io/hackamove](ktorz-net.github.io/hackamove)
+However, this documentation is also on line: [https://ktorz-net.github.io/hackamove](ktorz-net.github.io/hackamove)
 
 
 ## Contribute 

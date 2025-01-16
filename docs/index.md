@@ -1,2 +1,4 @@
-# HackaMove
+# MoveIt - an HackaGame game
+
+
 
