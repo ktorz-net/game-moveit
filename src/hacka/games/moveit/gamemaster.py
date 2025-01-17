@@ -1,124 +1,54 @@
-"""
-MoveIt - an HackaGame game 
-"""
+import re, hacka.pylib as hk
+from hacka.board import Board
+from hacka.artist import Artist
 
-from . import gamemaster
-
-GameMaster= gamemaster.GameMaster
-
-
-"""
-MoveIt - an HackaGame game 
-import sys, random, re
-
-Hexaboard= board.Hexaboard
-Cell= board.Cell
-Mobile= mobile.Mobile
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-import sys, random, re
-
-import hacka.pylib as hk
-from . import board, mobile
-
-import sys, random, re
-
-Hexaboard= board.Hexaboard
-Cell= board.Cell
-Mobile= mobile.Mobile
-
-def defineMobiles( nbRobots, nbMobiles ):
-    mobiles= [ Mobile(i+1) for i in range(nbMobiles) ]
-    for m in mobiles[nbRobots:] :
-        m.setHuman()
-    return mobiles
+from .mobile import Mobile
 
 class GameMaster( hk.AbsSequentialGame ) :
 
     # Initialization:
-    def __init__( self, seed=False, sizeLine=6, sizeHeight=4,
-                 numberOfRobots=1, numberOfHuman=2,
-                 numberOfObstacles=6, defective=False,
-                 numberOfCycle= 10, maximunTics= 16) :
-        super().__init__( numberOfPlayers=1 )
+    def __init__( self, seed=False, numberOfPlayers=1, numberOfRobots=2 ) :
+        super().__init__( numberOfPlayers )
         self._seed= seed
-        self._board= Hexaboard( sizeLine, sizeHeight )
-        self._mobiles= [ Mobile( i+1, i%sizeLine, i//sizeLine) for i in range(numberOfRobots+numberOfHuman)]
-        self._nbObstacles= numberOfObstacles
-        self._nbCycle= numberOfCycle
-        self._countDownCycle= numberOfCycle+1
-        self._maxTic= maximunTics
-        self._countDownTic= 0
+        self._board= Board()
+        self._robots= [ Mobile(i+1) for i in range(numberOfPlayers*numberOfRobots) ]
+        self._nbRobots= numberOfRobots
+        self._moves= []
+        self._maxTic= 100
+        self._countDownCycle= 100
+        self._score= [0 for p in range(numberOfPlayers) ]
         self._moveRePattern = re.compile( "^move "+ ' '.join(["[0123456]" for i in range(numberOfRobots)])+ "$" )
         self._moveRePatShort = re.compile( "^"+ ' '.join(["[0123456]" for i in range(numberOfRobots)])+ "$" )
-        if defective :
-            for robot in self._mobiles :
-                if random.random() < defective :
-                    robot.setError( random.choice([
-                        0.1, 0.1, 0.1, 0.1,
-                        0.2, 0.2, 0.2,
-                        0.3 ]) )
-        self._nbRobots= numberOfRobots
-        for i in range(numberOfHuman) :
-            h= self.mobile(numberOfRobots+1+i)
-            h.setHuman()
-            h.setError(0.15)
-        self._moves= []
+        
+        # Artist:
+        self._artist= Artist().initializePNG( "shot-moveIt.png" )
 
-    # Accessor: 
-    def mobiles(self):
-        return self._mobiles
-    
-    def mobile(self, i): 
-        return self._mobiles[i-1]
-
+    # accessor:
     def board(self): 
         return self._board
 
     def score(self):
         return self._score
 
+    def robots(self):
+        return self._robots
+
+    # Construction:
+    def initializeBoardGrid(self, matrix, size, separetion):
+        self._board.initializeSquares( matrix, size, separetion )
+        self._board.connectAllCondition(
+            lambda tileFrom, tileTo : tileFrom.centerDistance( tileTo ) < 1.2
+        )
+        self._artist.fitBox( self._board.box(), 10 )
+        return self
+
     # Game interface :
     def initialize(self):
         # clean Up.
-        self._board.clear()
-
-        # initialize board.
-        seed= (int)(random.random()*32000)
-        if self._seed :
-            random.seed( self._seed )
-        self._score= 0
-        self.setupObstacles()
-        self.setupMobile()
-        self._countDownCycle= self._nbCycle+1
-
-        # initialize cycle.
-        self.initializeCycle()
+        for tile in self._board.tiles() :
+            tile.clear()
         
-        # initialize board.
         pod= self._board.asPod("MoveIt")
-        pod.setFlags( pod.flags()+[ self._nbRobots, len(self._mobiles) ] )
-
-        # debug :
-        #print( self.board().shell() )
-        #for m in self.mobiles() :
-        #    print( m )
-        random.seed( seed )
         return pod
     
     def playerHand( self, iPlayer ):
@@ -126,11 +56,9 @@ class GameMaster( hk.AbsSequentialGame ) :
         pod= hk.Pod(
             'MoveIt', flags=[self._maxTic, self._countDownCycle],
             values= [self._score] )
-        for robot in self._mobiles :
-            if robot.number() <= self._nbRobots :
-                pod.append( robot.asPod("Robot") )
-            else :
-                pod.append( robot.asPod("Human") )
+        for robot in self._robots :
+            pod.append( robot.asPod("Robot") )
+        
         return pod
 
     def applyPlayerAction( self, iPlayer, action ):
@@ -159,6 +87,7 @@ class GameMaster( hk.AbsSequentialGame ) :
             self._moves= [ 0 for i in range(self._nbRobots) ]
         
         # Generate Human moves
+        """
         for human in self._mobiles[self._nbRobots:] :
             x, y= human.position()
             gx, gy= human.goal()
@@ -168,18 +97,20 @@ class GameMaster( hk.AbsSequentialGame ) :
                 self._moves.append(0)
             else : 
                 self._moves.append(dir)
+        """
 
         # Extract mobiles' directions
-        assert( len(self.mobiles()) == len(self._moves) )
+        assert( len(self.robots()) == len(self._moves) )
         multiMoves= [ [r.x(), r.y(), dir]
-             for r, dir in zip( self.mobiles(), self._moves ) ]
+             for r, dir in zip( self.robots(), self._moves ) ]
         
-        collisions= self.board().multiMoveHumans( multiMoves[self._nbRobots:] )
-        collisions+= self.board().multiMoveRobots( multiMoves[:self._nbRobots] )
+        collisions= 0
+        #collisions= self.board().multiMoveHumans( multiMoves[self._nbRobots:] )
+        #collisions+= self.board().multiMoveRobots( multiMoves[:self._nbRobots] )
         
         # valide robot goals
         allOk= True
-        for robot in self.mobiles()[:self._nbRobots] :
+        for robot in self.robots()[:self._nbRobots] :
             robot.updateGoalSatifaction()
             allOk= allOk and robot.isGoalSatisfied()
 
@@ -189,8 +120,8 @@ class GameMaster( hk.AbsSequentialGame ) :
             
         if allOk :
             # Bravo
-            self._score += self._countDownTic
-            self.initializeCycle()
+            self._score= 0# += self._countDownTic
+            #self.initializeCycle()
         elif self._countDownTic == 0 :
             # Too late
             self.initializeCycle()
@@ -207,9 +138,17 @@ class GameMaster( hk.AbsSequentialGame ) :
 
     def playerScore( self, iPlayer ):
         # All players are winners.
-        return self.score()/self._nbCycle
+        return 0.0 #self.score()/self._nbCycle
 
     # Board Managment:
+
+    # Artist rendering:
+    def render(self):
+        self._artist.drawBoard( self._board )
+        self._artist.flip()
+        return self
+    
+"""
     def setupObstacles(self):
         # initialize obstacles' positions:
         for iObst in range(self._nbObstacles) :
