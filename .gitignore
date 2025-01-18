@@ -6,6 +6,7 @@
 #-----------------
 build/
 site/
+shot-*
 
 # Log and configs
 #-----------------

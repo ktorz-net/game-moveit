@@ -1,6 +1,6 @@
 import re, hacka.pylib as hk
-from hacka.board import Board
 from hacka.artist import Artist
+import hacka.tiled as htiled
 
 from .mobile import Mobile
 
@@ -10,7 +10,7 @@ class GameMaster( hk.AbsSequentialGame ) :
     def __init__( self, seed=False, numberOfPlayers=1, numberOfRobots=2 ) :
         super().__init__( numberOfPlayers )
         self._seed= seed
-        self._board= Board()
+        self._board= htiled.Board()
         self._robots= [ Mobile(i+1) for i in range(numberOfPlayers*numberOfRobots) ]
         self._nbRobots= numberOfRobots
         self._moves= []
@@ -41,6 +41,11 @@ class GameMaster( hk.AbsSequentialGame ) :
         )
         self._artist.fitBox( self._board.box(), 10 )
         return self
+
+    def popRobot(self, playerId, tileId ):
+        robot= htiled.Piece( f"R{playerId}{0}", playerId , (0, 0), 0.7 )
+        robot._envs= [ (x+0.08, y+0.08) for x, y in robot._envs ]
+        self._board.tile(tileId).addPiece( robot )
 
     # Game interface :
     def initialize(self):
@@ -144,7 +149,14 @@ class GameMaster( hk.AbsSequentialGame ) :
 
     # Artist rendering:
     def render(self):
+        # Board:
         self._artist.drawBoard( self._board )
+        # Market:
+        self._artist.drawPolygon(
+            [6.55, 6.55, 9.5, 9.5], [2.45, -0.6, -0.6, 2.45],
+            self._artist._panel[6]
+        )
+        # Finalize:
         self._artist.flip()
         return self
     
