@@ -15,7 +15,7 @@ import src.hacka.games.moveit as mi
 
 def test_moveIt_board():
     # Game MoveIt:
-    game= mi.GameMaster( 38 )
+    game= mi.GameMaster( 38, numberOfPlayers=2 )
     matrix= [
         [00, 00, 00, -1, 00, 00, 00, 00, 00, 00],
         [00, -1, 00, 00, 00, -1, 00, -1, -1, 00],

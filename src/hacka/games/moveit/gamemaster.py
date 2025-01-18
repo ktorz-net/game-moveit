@@ -11,7 +11,7 @@ class GameMaster( hk.AbsSequentialGame ) :
         super().__init__( numberOfPlayers )
         self._seed= seed
         self._board= htiled.Board()
-        self._robots= [ Mobile(i+1) for i in range(numberOfPlayers*numberOfRobots) ]
+        self._mobiles= [ [] for i in range( numberOfPlayers+1 ) ]
         self._nbRobots= numberOfRobots
         self._moves= []
         self._maxTic= 100
@@ -30,8 +30,8 @@ class GameMaster( hk.AbsSequentialGame ) :
     def score(self):
         return self._score
 
-    def robots(self):
-        return self._robots
+    def mobiles(self):
+        return self._mobiles
 
     # Construction:
     def initializeBoardGrid(self, matrix, size, separetion):
@@ -43,9 +43,11 @@ class GameMaster( hk.AbsSequentialGame ) :
         return self
 
     def popRobot(self, playerId, tileId ):
-        robot= htiled.Piece( f"R{playerId}{0}", playerId , (0, 0), 0.7 )
-        robot._envs= [ (x+0.08, y+0.08) for x, y in robot._envs ]
-        self._board.tile(tileId).addPiece( robot )
+        robotId= len( self._mobiles[playerId] )+1
+        robot= hk.Pod( f"R-{robotId}", flags=[playerId] )
+        self._board.addPiece( robot, tileId, 10+playerId )
+        self._mobiles[playerId].append(robot)
+        return robot
 
     # Game interface :
     def initialize(self):
@@ -61,8 +63,9 @@ class GameMaster( hk.AbsSequentialGame ) :
         pod= hk.Pod(
             'MoveIt', flags=[self._maxTic, self._countDownCycle],
             values= [self._score] )
-        for robot in self._robots :
-            pod.append( robot.asPod("Robot") )
+        for mobileList in self._mobiles :
+            for robot in mobileList :
+                pod.append( robot.asPod("Robot") )
         
         return pod
 
@@ -105,9 +108,9 @@ class GameMaster( hk.AbsSequentialGame ) :
         """
 
         # Extract mobiles' directions
-        assert( len(self.robots()) == len(self._moves) )
-        multiMoves= [ [r.x(), r.y(), dir]
-             for r, dir in zip( self.robots(), self._moves ) ]
+        assert( len(self.mobiles()) == len(self._moves) )
+        #multiMoves= [ [r.x(), r.y(), dir]
+        #     for r, dir in zip( self.mobiles(), self._moves ) ]
         
         collisions= 0
         #collisions= self.board().multiMoveHumans( multiMoves[self._nbRobots:] )
@@ -115,9 +118,9 @@ class GameMaster( hk.AbsSequentialGame ) :
         
         # valide robot goals
         allOk= True
-        for robot in self.robots()[:self._nbRobots] :
-            robot.updateGoalSatifaction()
-            allOk= allOk and robot.isGoalSatisfied()
+        #for robot in self.robots()[:self._nbRobots] :
+        #    robot.updateGoalSatifaction()
+        #    allOk= allOk and robot.isGoalSatisfied()
 
         if collisions > 0 :
             # Dommage
