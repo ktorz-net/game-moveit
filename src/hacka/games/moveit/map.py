@@ -1,5 +1,6 @@
-import hacka.pylib as hk
 import hacka.tiled as htiled
+
+from .mobile import Mobile
 
 class Map( htiled.Map ):
     def __init__(self, numberOfPlayers= 1):
@@ -28,7 +29,7 @@ class Map( htiled.Map ):
             return False
         # Popping
         robotId= len( self._mobiles[playerId] )+1
-        robot= hk.Pod( f"R-{robotId}", flags=[playerId] )
+        robot= Mobile( playerId, robotId )
         self.addPiece( robot, tileId, 10+playerId )
         self._mobiles[playerId].append(tileId)
         return robot
@@ -58,9 +59,28 @@ class Map( htiled.Map ):
             clock[ic]= it
         return clock
 
-    def clock(self, iTile, clock):
-        return self.completeClock(iTile)[clock]
+    def clockposition(self, iTile, clockDir):
+        return self.completeClock(iTile)[clockDir]
     
+    # Moving:
+    def move(self, iFrom, clockDir):
+        if self.tile(iFrom).count() > 0 and clockDir == 0 :
+            return iFrom
+        iTo= self.clockposition( iFrom, clockDir ) 
+        return self.teleport(iFrom, iTo)
+
+    def teleport( self, iFrom, iTo ):
+        if self.tile(iFrom).count() == 0 or self.tile(iTo).count() :
+            return False
+        # move:
+        mobile= self.tile(iFrom).piece()
+        self.tile(iFrom).clear()
+        self.tile(iTo).append(mobile, 10+mobile.owner())
+        # update knoledge:
+        owner= mobile.owner()
+        self._mobiles[owner][ mobile.identifier()-1 ]= iTo
+        return iTo
+
     # Artist rendering:
     def render(self, artist):
         artist.drawMap( self )

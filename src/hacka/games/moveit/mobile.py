@@ -4,7 +4,25 @@ Test - MoveIt Robot Class
 
 import hacka.pylib as hk
 
-class Mobile(hk.PodInterface):
+class Mobile(hk.Pod):
+    FLAG_OWNER= 1
+    FLAG_ID   = 2
+
+    def __init__( self, owner=0, identif=0 ):
+        name= f"R-{identif}"
+        if owner == 0 :
+            name= f"Vip{identif}"
+        super().__init__( name, flags=[owner, identif] )
+
+    # Accessor: 
+    def owner(self):
+        return self.flag( Mobile.FLAG_OWNER )
+    
+    def identifier(self):
+        return self.flag( Mobile.FLAG_ID )
+    
+    
+class OldMobile(hk.PodInterface):
     TYPE_ROBOT= 0
     TYPE_HUMAN= 1
     
