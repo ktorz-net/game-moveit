@@ -40,10 +40,11 @@ def test_moveIt_board():
     artist= hartist.Artist().initializePNG( "shot-moveIt.png" )
     artist.fitBox( map.box(), 10 )
 
-    map.render( artist )
+    artist.drawMap( map )
+    artist.flip()
 
     shotFile= open( "shot-moveIt.png", mode='rb' ).read()
-    refsFile= open( "tests/refs/02-board-01.png", mode='rb' ).read()
+    refsFile= open( "tests/refs/01-map-01.png", mode='rb' ).read()
     assert( shotFile == refsFile )
 
     assert map.popRobot(1, 1)
@@ -52,10 +53,11 @@ def test_moveIt_board():
     assert map.popRobot(2, 7)
     assert map.popRobot(2, 44)
 
-    map.render( artist )
-    
+    artist.drawMap( map )
+    artist.flip()
+
     shotFile= open( "shot-moveIt.png", mode='rb' ).read()
-    refsFile= open( "tests/refs/02-board-02.png", mode='rb' ).read()
+    refsFile= open( "tests/refs/01-map-02.png", mode='rb' ).read()
     assert( shotFile == refsFile )
 
 def test_moveIt_neibors():
@@ -113,10 +115,11 @@ def test_moveIt_robots():
     artist= hartist.Artist().initializePNG( "shot-moveIt.png" )
     artist.fitBox( map.box(), 10 )
     
-    map.render( artist )
+    artist.drawMap( map )
+    artist.flip()
 
     shotFile= open( "shot-moveIt.png", mode='rb' ).read()
-    refsFile= open( "tests/refs/02-map-03.png", mode='rb' ).read()
+    refsFile= open( "tests/refs/01-map-03.png", mode='rb' ).read()
     assert( shotFile == refsFile )
 
 """

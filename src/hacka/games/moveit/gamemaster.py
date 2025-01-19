@@ -3,6 +3,7 @@ from hacka.artist import Artist
 import hacka.tiled as htiled
 
 from .map import Map
+from .gameengine import Engine
 from .mobile import Mobile
 
 class GameMaster( hk.AbsSequentialGame ) :

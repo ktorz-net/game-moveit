@@ -80,14 +80,3 @@ class Map( htiled.Map ):
         owner= mobile.owner()
         self._mobiles[owner][ mobile.identifier()-1 ]= iTo
         return iTo
-
-    # Artist rendering:
-    def render(self, artist):
-        artist.drawMap( self )
-        # Market:
-        artist.drawPolygon(
-            [6.55, 6.55, 9.5, 9.5], [2.45, -0.6, -0.6, 2.45],
-            artist._panel[6]
-        )
-        # Finalize:
-        artist.flip()
