@@ -2,8 +2,9 @@
 MoveIt - an HackaGame game 
 """
 
-from . import gamemaster
+from . import map, gamemaster
 
+Map= map.Map
 GameMaster= gamemaster.GameMaster
 
 

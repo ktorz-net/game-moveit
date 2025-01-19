@@ -2,6 +2,7 @@ import re, hacka.pylib as hk
 from hacka.artist import Artist
 import hacka.tiled as htiled
 
+from .map import Map
 from .mobile import Mobile
 
 class GameMaster( hk.AbsSequentialGame ) :
@@ -10,8 +11,7 @@ class GameMaster( hk.AbsSequentialGame ) :
     def __init__( self, seed=False, numberOfPlayers=1, numberOfRobots=2 ) :
         super().__init__( numberOfPlayers )
         self._seed= seed
-        self._board= htiled.Board()
-        self._mobiles= [ [] for i in range( numberOfPlayers+1 ) ]
+        self._map= Map()
         self._nbRobots= numberOfRobots
         self._moves= []
         self._maxTic= 100
@@ -22,40 +22,30 @@ class GameMaster( hk.AbsSequentialGame ) :
         
         # Artist:
         self._artist= Artist().initializePNG( "shot-moveIt.png" )
-
+    
+    # Construction:
+    def initializeGrid(self, matrix, size, separetion):
+        self._map.initializeGrid( matrix, size, separetion )
+        self._artist.fitBox( self._map.box(), 10 )
+        return self
+    
     # accessor:
-    def board(self): 
-        return self._board
+    def map(self): 
+        return self._map
 
     def score(self):
         return self._score
 
     def mobiles(self):
-        return self._mobiles
-
-    # Construction:
-    def initializeBoardGrid(self, matrix, size, separetion):
-        self._board.initializeSquares( matrix, size, separetion )
-        self._board.connectAllCondition(
-            lambda tileFrom, tileTo : tileFrom.centerDistance( tileTo ) < 1.2
-        )
-        self._artist.fitBox( self._board.box(), 10 )
-        return self
-
-    def popRobot(self, playerId, tileId ):
-        robotId= len( self._mobiles[playerId] )+1
-        robot= hk.Pod( f"R-{robotId}", flags=[playerId] )
-        self._board.addPiece( robot, tileId, 10+playerId )
-        self._mobiles[playerId].append(robot)
-        return robot
+        return self._map._mobiles
 
     # Game interface :
     def initialize(self):
         # clean Up.
-        for tile in self._board.tiles() :
+        for tile in self._map.tiles() :
             tile.clear()
         
-        pod= self._board.asPod("MoveIt")
+        pod= self._map.asPod("MoveIt")
         return pod
     
     def playerHand( self, iPlayer ):
@@ -63,7 +53,7 @@ class GameMaster( hk.AbsSequentialGame ) :
         pod= hk.Pod(
             'MoveIt', flags=[self._maxTic, self._countDownCycle],
             values= [self._score] )
-        for mobileList in self._mobiles :
+        for mobileList in self.mobiles() :
             for robot in mobileList :
                 pod.append( robot.asPod("Robot") )
         
@@ -99,9 +89,9 @@ class GameMaster( hk.AbsSequentialGame ) :
         for human in self._mobiles[self._nbRobots:] :
             x, y= human.position()
             gx, gy= human.goal()
-            dir= self._board.path( x, y, gx, gy )[0]
-            tx, ty= self._board.at_dir(x, y, dir)
-            if self._board.at(tx, ty).mobile() :
+            dir= self._map.path( x, y, gx, gy )[0]
+            tx, ty= self._map.at_dir(x, y, dir)
+            if self._map.at(tx, ty).mobile() :
                 self._moves.append(0)
             else : 
                 self._moves.append(dir)
@@ -152,37 +142,29 @@ class GameMaster( hk.AbsSequentialGame ) :
 
     # Artist rendering:
     def render(self):
-        # Board:
-        self._artist.drawBoard( self._board )
-        # Market:
-        self._artist.drawPolygon(
-            [6.55, 6.55, 9.5, 9.5], [2.45, -0.6, -0.6, 2.45],
-            self._artist._panel[6]
-        )
-        # Finalize:
-        self._artist.flip()
+        self.map.render( self._artist )
         return self
     
 """
     def setupObstacles(self):
         # initialize obstacles' positions:
         for iObst in range(self._nbObstacles) :
-            options= self._board.cellsObstacleOk()
+            options= self._map.cellsObstacleOk()
             if len(options) == 0 :
                 break
             x, y= random.choice( options )
-            self._board.at(x, y).setObstacle()
+            self._map.at(x, y).setObstacle()
 
     def setupMobile(self):
         # initialize robot' positions:
         for robot in self._mobiles :
-            x, y= random.choice( self._board.cellsEmpty() )
+            x, y= random.choice( self._map.cellsEmpty() )
             robot.setPosition(x, y)
-            self._board.at(x, y).attachMobile( robot )
+            self._map.at(x, y).attachMobile( robot )
 
     def initializeCycle(self):
         # initialize robot' Goals:
-        goalOptions= self._board.cellsType( Cell.TYPE_FREE )
+        goalOptions= self._map.cellsType( Cell.TYPE_FREE )
         for robot in self._mobiles :
             gx, gy= random.choice( goalOptions )
             robot.setGoal( gx, gy )
