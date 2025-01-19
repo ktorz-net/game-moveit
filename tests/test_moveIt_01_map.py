@@ -1,8 +1,10 @@
-import sys, copy, pathlib
+import sys, copy
+from . import local
 
 import hacka.pylib  as hacka
 import hacka.artist as hartist
 import hacka.tiled  as htiled
+
 
 """
 Test - MoveIt Games Class
@@ -42,6 +44,7 @@ def test_moveIt_board():
 
     artist.drawMap( map )
     artist.flip()
+    local.sleep()
 
     shotFile= open( "shot-moveIt.png", mode='rb' ).read()
     refsFile= open( "tests/refs/01-map-01.png", mode='rb' ).read()
@@ -55,6 +58,7 @@ def test_moveIt_board():
 
     artist.drawMap( map )
     artist.flip()
+    local.sleep()
 
     shotFile= open( "shot-moveIt.png", mode='rb' ).read()
     refsFile= open( "tests/refs/01-map-02.png", mode='rb' ).read()
@@ -117,6 +121,7 @@ def test_moveIt_robots():
     
     artist.drawMap( map )
     artist.flip()
+    local.sleep()
 
     shotFile= open( "shot-moveIt.png", mode='rb' ).read()
     refsFile= open( "tests/refs/01-map-03.png", mode='rb' ).read()

@@ -1,6 +1,8 @@
-import sys, pathlib
+import sys
+from . import local
 
 import hacka.pylib  as hacka
+
 
 """
 Test - MoveIt Games Class
@@ -23,7 +25,9 @@ matrix= [
 
 def test_gameengine_init():
     game= mi.GameEngine()
+
     game.render()
+    local.sleep()
     
     shotFile= open( "shot-moveIt.png", mode='rb' ).read()
     refsFile= open( "tests/refs/02-engine-01.png", mode='rb' ).read()
@@ -32,7 +36,9 @@ def test_gameengine_init():
 
 def test_gameengine_init():
     game= mi.GameEngine( matrix )
+
     game.render()
+    local.sleep()
     
     shotFile= open( "shot-moveIt.png", mode='rb' ).read()
     refsFile= open( "tests/refs/02-engine-02.png", mode='rb' ).read()

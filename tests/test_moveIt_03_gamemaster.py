@@ -1,4 +1,5 @@
-import sys, pathlib
+import sys
+from . import local
 
 import hacka.pylib  as hacka
 
