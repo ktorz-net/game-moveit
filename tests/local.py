@@ -3,7 +3,7 @@ import time
 # Attributes
 
 class _:
-    doSleep= True
+    doSleep= False
 
 def sleep( dur= 0.33):
     if _.doSleep :
