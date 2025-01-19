@@ -86,27 +86,27 @@ def test_moveIt_robots():
     map= mi.Map( numberOfPlayers=2 )
     map.initializeGrid( copy.deepcopy(refMatrix), 0.9, 0.1 )
 
-    assert str(map.popRobot(1, 1)) == 'R-1: [1, 1]'
-    assert str(map.popRobot(1, 25)) == 'R-2: [1, 2]'
+    assert str(map.popRobot(1, 1)) == 'R-1: [1, 1, 0]'
+    assert str(map.popRobot(1, 25)) == 'R-2: [1, 2, 0]'
 
-    assert str(map.popRobot(2, 7)) == 'R-1: [2, 1]'
-    assert str(map.popRobot(2, 44)) == 'R-2: [2, 2]'
+    assert str(map.popRobot(2, 7)) == 'R-1: [2, 1, 0]'
+    assert str(map.popRobot(2, 44)) == 'R-2: [2, 2, 0]'
 
     assert map.popRobot(3, 33) == False
     assert map.popRobot(1, 7) == False
 
-    assert map.robots(1) == [1, 25]
-    assert map.robots(2) == [7, 44]
+    assert map.mobilePositions(1) == [1, 25]
+    assert map.mobilePositions(2) == [7, 44]
 
     assert map.vips() == []
 
     assert map.move( 11, 12 ) == False
     assert map.move( 1, 6 ) == 10
 
-    assert map.robots(1) == [10, 25]
-    assert map.robots(2) == [7, 44]
+    assert map.mobilePositions(1) == [10, 25]
+    assert map.mobilePositions(2) == [7, 44]
 
-    assert str( map.tile(10).piece() ) == 'R-1: [1, 1]'
+    assert str( map.tile(10).piece() ) == 'R-1: [1, 1, 0]'
 
     assert map.clockBearing(44) == [9, 0, 3]
 
@@ -127,6 +127,9 @@ def test_moveIt_robots():
     refsFile= open( "tests/refs/01-map-03.png", mode='rb' ).read()
     assert( shotFile == refsFile )
 
+
+    assert map.clockposition( 11, 12 ) == 3
+    
 """
     [ 1,  2,  3,   ,  4,  5,  6,  7,  8,  9],
     [10,   , 11, 12, 13,   , 14,   ,   , 15],

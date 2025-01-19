@@ -12,8 +12,11 @@ class Map( htiled.Map ):
     def vips(self):
         return self._mobiles[0]
     
-    def robots(self, playerId):
+    def mobilePositions(self, playerId):
         return self._mobiles[playerId]
+
+    def mobilePosition(self, playerId, iRobot):
+        return self._mobiles[playerId][iRobot-1]
 
     # Construction:
     def initializeGrid(self, matrix, size, separetion):
@@ -33,7 +36,13 @@ class Map( htiled.Map ):
         self.addPiece( robot, tileId, 10+playerId )
         self._mobiles[playerId].append(tileId)
         return robot
-    
+
+    def initializeMoves(self):
+        for mobilePositions in self._mobiles :
+            for i in mobilePositions :
+                for piece in self.tile(i).pieces():
+                    piece.setMove(0)
+
     # Graph:
     def neighbours(self, iTile) :
         return self.tile(iTile).adjacencies()

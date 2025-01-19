@@ -7,12 +7,14 @@ import hacka.pylib as hk
 class Mobile(hk.Pod):
     FLAG_OWNER= 1
     FLAG_ID   = 2
+    FLAG_MISSION = 3
 
     def __init__( self, owner=0, identif=0 ):
         name= f"R-{identif}"
         if owner == 0 :
             name= f"Vip{identif}"
-        super().__init__( name, flags=[owner, identif] )
+        super().__init__( name, flags=[owner, identif, 0] )
+        self._clockMove= 0
 
     # Accessor: 
     def owner(self):
@@ -21,7 +23,18 @@ class Mobile(hk.Pod):
     def identifier(self):
         return self.flag( Mobile.FLAG_ID )
     
+    def mission(self):
+        return self.flag( Mobile.FLAG_MISSION )
     
+    def setMission(self, iMission):
+        self.setFlag( Mobile.FLAG_MISSION, iMission )
+
+    def move(self):
+        return self._clockMove
+
+    def setMove(self, clockDir):
+        self._clockMove= clockDir
+
 class OldMobile(hk.PodInterface):
     TYPE_ROBOT= 0
     TYPE_HUMAN= 1
