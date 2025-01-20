@@ -321,10 +321,9 @@ def test_gameengine_podInterface():
 
     pod= game.asPod()
 
-    print( f'"""{pod}"""' )
+    #print( f'"""{pod}"""' )
     
-    assert str(pod) == """MoveIt: [1, 1, 0, 100]
-- scores: [0, 0]
+    assert str(pod) == """MoveIt: [1, 1, 0, 100] [0.0, 0.0]
 - Map:
   - Shape: [0] [-0.29, 0.12, -0.12, 0.29, 0.12, 0.29, 0.29, 0.12, 0.29, -0.12, 0.12, -0.29, -0.12, -0.29, -0.29, -0.12]
   - Tile: [1, 0, 1, 2, 4] [0.0, 2.0, -0.45, 0.45, 0.45, 0.45, 0.45, -0.45, -0.45, -0.45]
@@ -346,20 +345,28 @@ def test_gameengine_podInterface():
     assert type( game2.mobile(1, 1) ) == mi.Mobile
     assert game2.mobile(1, 1).owner() == 1
 
-    print( f'"""{game2.asPod()}"""' )
+    #print( f'"""{game2.asPod()}"""' )
 
     assert str( game2.asPod() ) == str( pod )
+
+    state= game2.state()
+    print( f'"""{state}"""' )
+    assert str(state) == """State: [100] [0.0, 0.0]
+- missions:
+  - 1: [3, 8, 10, 0]
+- mobiles:
+  - Pod: [1, 1, 4, 0]"""
+
+    stateBis= mi.GameEngine().setOnState(state).state()
+    print( f'"""{stateBis}"""' )
+    assert str(stateBis) == str(state)
 
 def test_gameengine_podInterface2():
     game= mi.GameEngine( matrix, 2, 3, 0, missions= missions )
     pod= game.asPod()
 
-    print( f'"""{pod}"""' )
-
     game2= mi.GameEngine()
     game2.fromPod( pod )
-
-    print( f'"""{game2.asPod()}"""' )
 
     assert str( game2.asPod() ) == str( pod )
 
@@ -370,5 +377,21 @@ def test_gameengine_podInterface2():
     refsFile= open( "tests/refs/02-engine-07.png", mode='rb' ).read()
     assert( shotFile == refsFile )
 
-    assert False
-    
+    game._scores= [0, 120, 90]
+
+    game.setMoveAction( 1, 1, 6 )
+    game.setMoveAction( 1, 3, 6 )
+    game.setMoveAction( 2, 1, 6 )
+    game.setMoveAction( 2, 3, 6 )
+    game.applyMoveActions()
+
+    print( f'"""{game.state()}"""' )
+
+    game2.setOnState( game.state() )
+
+    assert game2.score(1) == 120
+    assert game2.score(2) == 90
+    assert game2._map.mobilePositions(1) == [10, 2, 11]
+    assert game2._map.mobilePositions(2) == [13, 5, 14]
+
+    assert str( game2.asPod() ) == str( game.asPod() )

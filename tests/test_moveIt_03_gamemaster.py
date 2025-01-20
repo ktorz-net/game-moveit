@@ -18,7 +18,7 @@ def test_gameMethod():
 
     assert( type( master.initialize().asPod() ) is hacka.Pod  )
     assert( type( master.playerHand(1).asPod() ) is hacka.Pod )
-    assert( master.applyPlayerAction( 1, "move 0" )  )
+    assert( master.applyPlayerAction( 1, "move 1 0" )  )
     master.tic()
     assert( not master.isEnded() )
     

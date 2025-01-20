@@ -25,7 +25,7 @@ class Engine():
                 self._map.popRobot( pId, iTile )
                 iTile+=1
         # Players: 
-        self._scores= [ 0 for i in range(numberOfPlayers+1) ]
+        self._scores= [ 0.0 for i in range(numberOfPlayers+1) ]
         self._numberOfPlayers= numberOfPlayers
         # Initialize Mission:
         self._missions= []
@@ -43,7 +43,6 @@ class Engine():
     def numberOfPlayers(self):
         return self._numberOfPlayers
     
-
     def numberOfRobots(self, iPlayer=1):
         return len( self._map._mobiles[iPlayer] )
     
@@ -52,6 +51,9 @@ class Engine():
     
     def mobilePosition(self, iPlayer, iRobot):
         return self._map.mobilePosition(iPlayer, iRobot)
+
+    def mobileMission(self, iPlayer, iRobot):
+        return self.mobile(iPlayer, iRobot).mission()
 
     def mobile(self, iPlayer, iRobot):
         iTile= self._map.mobilePosition(iPlayer, iRobot)
@@ -189,12 +191,67 @@ class Engine():
         # Finalize:
         self._artist.flip()
 
+    # State and Updates:
+    def state(self):
+        # Engine :
+        pod= hacka.Pod( "State", "", [self._tic], self._scores )
+        # Missions :
+        pod.append( self.stateMissions() )
+        # Mobiles :
+        pod.append( self.stateMobiles() )
+        return pod
+    
+    def setOnState(self, podState):
+        # Engine :
+        self._tic= podState.flag(1)
+        # Score :
+        self._scores= podState.values()
+        # Missions :
+        self.setStateMissions( podState.child(1) )
+        # Mobiles :
+        self.setStateMobiles( podState.child(2) )
+        return self
+    
+    def stateMissions(self):
+        podMissions= hacka.Pod( "missions" )
+        i= 1
+        for m in self._missions :
+            podMissions.append( hacka.Pod( f"{i}", flags=list(m) ) )
+            i+= 1
+        return podMissions
+    
+    def setStateMissions( self, podState ):
+        self._missions= []
+        for pod in podState.children() :
+            self._missions.append( (pod.flag(1), pod.flag(2),pod.flag(3), pod.flag(4)) )
+        return self
+    
+    def stateMobiles(self):
+        podMobiles= hacka.Pod( "mobiles" )
+        for ip in range(self.numberOfPlayers()+1 ):
+            for ir in range( 1, self.numberOfRobots(ip)+1 ):
+                pos= self.mobilePosition(ip, ir)
+                mis= self.mobileMission(ip, ir)
+                podMobiles.append( hacka.Pod( flags=[ip, ir, pos, mis] ) )
+        return podMobiles
+    
+    def setStateMobiles( self, podState ):
+        self._map.clearMobiles()
+        for pod in podState.children() :
+            iPlayer= pod.flag(1)
+            iRobot= pod.flag(2)
+            pos= pod.flag(3)
+            mis= pod.flag(4)
+            self._map.popRobot( iPlayer, pos, mis )
+        return self
+    
     # Podable :
     def asPod(self, name="MoveIt"):
         # Engine :
-        pod= hacka.Pod( name, "", [self._numberOfPlayers, self.numberOfRobots(), self.numberOfVips(), self._tic], [] )
-        # Score :
-        pod.append( hacka.Pod( "scores", "", self._scores, [] ) )
+        pod= hacka.Pod( 
+            name, "",
+            [self._numberOfPlayers, self.numberOfRobots(), self.numberOfVips(), self._tic],
+            self._scores )
         # Map :
         pod.append( self._map.asPod() )
         # Missions :
@@ -213,14 +270,14 @@ class Engine():
         numberOfVips= pod.flag(3)
         self._tic= pod.flag(4)
         # Score :
-        self._scores= pod.child(1).flags()
+        self._scores= pod.values()
         # Map :
         self._map._mobiles= [ [0 for i in range(numberOfVips) ] ]
         for p in range( self.numberOfPlayers() ):
             self._map._mobiles.append( [ 0 for i in range(numberOfRobots) ] )
-        self._map.fromPod( pod.child(2) )
+        self._map.fromPod( pod.child(1) )
         # Missions :
         self._missions= []
-        for pod in pod.child(3).children() :
+        for pod in pod.child(2).children() :
             self._missions.append( tuple(pod.flags()) )
         return self

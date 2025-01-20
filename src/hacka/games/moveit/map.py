@@ -28,14 +28,20 @@ class Map( htiled.Map ):
             shape.round(2)
         
         return self
-
-    def popRobot(self, playerId, tileId ):
+    
+    def clearMobiles(self):
+        for mobileList in self._mobiles :
+            for pos in mobileList :
+                self.tile(pos).clear()
+        self._mobiles= [ [] for i in range( len(self._mobiles) ) ]
+    
+    def popRobot(self, playerId, tileId, mission=0 ):
         # Safety
         if playerId >= len(self._mobiles) or self.tile(tileId).count() > 0 :
             return False
         # Popping
         robotId= len( self._mobiles[playerId] )+1
-        robot= Mobile( playerId, robotId )
+        robot= Mobile( playerId, robotId, mission)
         self.addPiece( robot, tileId, 10+playerId )
         self._mobiles[playerId].append(tileId)
         return robot
@@ -101,4 +107,3 @@ class Map( htiled.Map ):
                 iPlayer= self.tile(t)._pieces[p].flag(1)
                 iRobot= self.tile(t)._pieces[p].flag(2)
                 self._mobiles[iPlayer][iRobot-1]= t
-                print( f"> {self.tile(t)._pieces[p]} on {t}" )

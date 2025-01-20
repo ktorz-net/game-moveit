@@ -9,11 +9,11 @@ class Mobile(hk.Pod):
     FLAG_ID   = 2
     FLAG_MISSION = 3
 
-    def __init__( self, owner=0, identif=0 ):
+    def __init__( self, owner=0, identif=0, mission= 0):
         name= f"R-{identif}"
         if owner == 0 :
             name= f"Vip{identif}"
-        super().__init__( name, flags=[owner, identif, 0] )
+        super().__init__( name, flags=[owner, identif, mission] )
         self._clockMove= 0
 
     # Accessor: 
