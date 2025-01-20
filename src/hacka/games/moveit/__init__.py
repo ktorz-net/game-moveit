@@ -2,11 +2,12 @@
 MoveIt - an HackaGame game 
 """
 
-from . import map, gameengine, gamemaster
+from . import mobile, map, gameengine, gamemaster
 
+Mobile= mobile.Mobile
 Map= map.Map
 GameEngine= gameengine.Engine
-GameMaster= gamemaster.GameMaster
+GameMaster= gamemaster.Master
 
 
 """

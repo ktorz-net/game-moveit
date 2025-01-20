@@ -22,6 +22,13 @@ matrix= [
     [00, 00, 00, 00, 00, -1, 00, -1, -1, -1]
 ]
 
+missions= [
+    ( 19, 48 ), ( 43, 28 ), ( 43, 40 ),
+    ( 22, 34 ), ( 35, 25 ), ( 10, 12 ),
+    ( 14, 12 ), ( 29, 34 ), ( 12, 44 ),
+    ( 29, 34 ), ( 12, 36 )
+]
+
 def test_gameengine_init():
     game= mi.GameEngine()
 
@@ -57,6 +64,7 @@ def test_gameengine_move():
     refsFile= open( "tests/refs/02-engine-01.png", mode='rb' ).read()
     assert( shotFile == refsFile )
 
+    assert game.tic() == 100
     assert game.moveActions( 1 ) == [0]
     assert game.setMoveAction( 1, 1, 6 )
     assert game.moveActions( 1 ) == [6]
@@ -64,6 +72,7 @@ def test_gameengine_move():
     assert game._map.mobilePositions(1) == [1]
 
     game.applyMoveActions()
+    assert game.tic() == 99
 
     assert game._map.mobilePositions(1) == [4]
 
@@ -79,6 +88,7 @@ def test_gameengine_move():
     assert game.moveActions(1) == [3]
 
     game.applyMoveActions()
+    assert game.tic() == 98
 
     assert game._map.mobilePositions(1) == [4]
 
@@ -121,6 +131,7 @@ def test_gameengine_mission():
 
     game.setMoveAction( 1, 1, 6 )
     game.applyMoveActions()
+    assert game.tic() == 99
 
     assert game.missionAction(1, 1, 1) == True
 
@@ -162,9 +173,202 @@ def test_gameengine_mission():
     assert game.mobile(1, 1).mission() == 0
     assert game.freeMissions() == [2]
 
+    assert game.tic() == 95
+
     game.render()
     local.sleep()
 
     shotFile= open( "shot-moveIt.png", mode='rb' ).read()
     refsFile= open( "tests/refs/02-engine-06.png", mode='rb' ).read()
     assert( shotFile == refsFile )
+
+def test_gameengine_collisions():
+    game= mi.GameEngine( matrix, 2, 3, 0 )
+
+    i= 1
+    for iFrom, iTo in missions :
+        assert game.addMission( iFrom, iTo ) == i
+        i+= 1
+
+    game.render()
+    local.sleep()
+
+    shotFile= open( "shot-moveIt.png", mode='rb' ).read()
+    refsFile= open( "tests/refs/02-engine-07.png", mode='rb' ).read()
+    assert( shotFile == refsFile )
+
+    assert game._map.mobilePositions(0) == []
+    assert game._map.mobilePositions(1) == [1, 2, 3]
+    assert game._map.mobilePositions(2) == [4, 5, 6]
+
+    game.setMoveAction( 1, 1, 6 )
+    game.setMoveAction( 1, 2, 0 )
+    game.setMoveAction( 1, 3, 6 )
+    
+    game.setMoveAction( 2, 1, 6 )
+    game.setMoveAction( 2, 2, 0 )
+    game.setMoveAction( 2, 3, 6 )
+
+    assert game.applyMoveActions() == 0
+
+    assert game._map.mobilePositions(1) == [10, 2, 11]
+    assert game._map.mobilePositions(2) == [13, 5, 14]
+
+    game.setMoveAction( 1, 1, 12 )
+    game.setMoveAction( 1, 2, 9 )
+    game.setMoveAction( 1, 3, 3 )
+    
+    game.setMoveAction( 2, 1, 12 )
+    game.setMoveAction( 2, 2, 3 )
+    game.setMoveAction( 2, 3, 0 )
+
+    assert game.applyMoveActions() == 2
+
+    assert game._map.mobilePositions(1) == [10, 2, 12]
+    assert game._map.mobilePositions(2) == [4, 6, 14]
+
+    game.setMoveAction( 2, 1, 3 )
+    game.setMoveAction( 2, 2, 6 )
+    game.setMoveAction( 2, 3, 6 )
+
+    assert game.applyMoveActions() == 1
+
+    assert game._map.mobilePositions(1) == [10, 2, 12]
+    assert game._map.mobilePositions(2) == [5, 6, 21]
+
+
+def test_gameengine_score():
+    game= mi.GameEngine( matrix, 2, 3, 0, missions= missions )
+
+    game.render()
+    local.sleep()
+
+    shotFile= open( "shot-moveIt.png", mode='rb' ).read()
+    refsFile= open( "tests/refs/02-engine-07.png", mode='rb' ).read()
+    assert( shotFile == refsFile )
+
+    assert game.score(1) == 0
+    assert game.score(2) == 0
+
+    game.setMoveAction( 1, 1, 6 )
+    game.setMoveAction( 1, 3, 6 )
+    
+    game.setMoveAction( 2, 1, 6 )
+    game.setMoveAction( 2, 3, 6 )
+
+    assert game.applyMoveActions() == 0
+    
+    assert game.score(1) == 0
+    assert game.score(2) == 0
+
+    assert game._map.mobilePositions(1) == [10, 2, 11]
+    assert game._map.mobilePositions(2) == [13, 5, 14]
+
+    game.setMoveAction( 1, 1, 12 )
+    game.setMoveAction( 1, 2, 9 )
+    game.setMoveAction( 1, 3, 3 )
+    
+    game.setMoveAction( 2, 1, 12 )
+    game.setMoveAction( 2, 2, 3 )
+    game.setMoveAction( 2, 3, 0 )
+
+    assert game.applyMoveActions() == 2
+    
+    assert game.score(1) == -200
+    assert game.score(2) == 0
+
+    assert game._map.mobilePositions(1) == [10, 2, 12]
+    assert game._map.mobilePositions(2) == [4, 6, 14]
+
+    game.missionAction( 1, 3, 11 )
+    game.setMoveAction( 2, 1, 3 )
+    game.setMoveAction( 2, 2, 6 )
+    game.setMoveAction( 2, 3, 6 )
+
+    assert game.applyMoveActions() == 1
+
+    assert game.score(1) == -200
+    assert game.score(2) == -100
+
+    game._map.teleport( 12, 36 )
+    game._map.teleport( 5, 17 )
+
+    game.missionAction( 1, 3, 11 )
+    game.addMission( 30, 4, 70 )
+
+    assert game.score(1) == -190
+    assert game.score(2) == -100
+
+    game.setMoveAction( 1, 1, 6 )
+    game.setMoveAction( 2, 1, 9 )
+
+    assert game.applyMoveActions() == 2
+
+    assert game.score(1) == -290
+    assert game.score(2) == -200
+
+    game.render()
+    local.sleep()
+
+    shotFile= open( "shot-moveIt.png", mode='rb' ).read()
+    refsFile= open( "tests/refs/02-engine-08.png", mode='rb' ).read()
+    assert( shotFile == refsFile )
+
+def test_gameengine_podInterface():
+    game= mi.GameEngine( missions= [(3, 8)] )
+    
+    game._map.teleport( 1, 4 )
+
+    pod= game.asPod()
+
+    print( f'"""{pod}"""' )
+    
+    assert str(pod) == """MoveIt: [1, 1, 0, 100]
+- scores: [0, 0]
+- Map:
+  - Shape: [0] [-0.29, 0.12, -0.12, 0.29, 0.12, 0.29, 0.29, 0.12, 0.29, -0.12, 0.12, -0.29, -0.12, -0.29, -0.29, -0.12]
+  - Tile: [1, 0, 1, 2, 4] [0.0, 2.0, -0.45, 0.45, 0.45, 0.45, 0.45, -0.45, -0.45, -0.45]
+  - Tile: [2, 0, 1, 2, 3] [1.0, 2.0, -0.45, 0.45, 0.45, 0.45, 0.45, -0.45, -0.45, -0.45]
+  - Tile: [3, 0, 2, 3, 5] [2.0, 2.0, -0.45, 0.45, 0.45, 0.45, 0.45, -0.45, -0.45, -0.45]
+  - Tile: [4, 0, 1, 4, 6] [0.0, 1.0, -0.45, 0.45, 0.45, 0.45, 0.45, -0.45, -0.45, -0.45]
+    - R-1: [1, 1, 0]
+  - Tile: [5, 0, 3, 5, 8] [2.0, 1.0, -0.45, 0.45, 0.45, 0.45, 0.45, -0.45, -0.45, -0.45]
+  - Tile: [6, 0, 4, 6, 7] [0.0, 0.0, -0.45, 0.45, 0.45, 0.45, 0.45, -0.45, -0.45, -0.45]
+  - Tile: [7, 0, 6, 7, 8] [1.0, 0.0, -0.45, 0.45, 0.45, 0.45, 0.45, -0.45, -0.45, -0.45]
+  - Tile: [8, 0, 5, 7, 8] [2.0, 0.0, -0.45, 0.45, 0.45, 0.45, 0.45, -0.45, -0.45, -0.45]
+- missions:
+  - 1: [3, 8, 10, 0]"""
+
+    game2= mi.GameEngine()
+    game2.fromPod(pod)
+
+    assert game2.mobilePosition(1, 1) == 4
+    assert type( game2.mobile(1, 1) ) == mi.Mobile
+    assert game2.mobile(1, 1).owner() == 1
+
+    print( f'"""{game2.asPod()}"""' )
+
+    assert str( game2.asPod() ) == str( pod )
+
+def test_gameengine_podInterface2():
+    game= mi.GameEngine( matrix, 2, 3, 0, missions= missions )
+    pod= game.asPod()
+
+    print( f'"""{pod}"""' )
+
+    game2= mi.GameEngine()
+    game2.fromPod( pod )
+
+    print( f'"""{game2.asPod()}"""' )
+
+    assert str( game2.asPod() ) == str( pod )
+
+    game.render()
+    local.sleep()
+
+    shotFile= open( "shot-moveIt.png", mode='rb' ).read()
+    refsFile= open( "tests/refs/02-engine-07.png", mode='rb' ).read()
+    assert( shotFile == refsFile )
+
+    assert False
+    

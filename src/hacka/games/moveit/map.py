@@ -24,6 +24,9 @@ class Map( htiled.Map ):
         self.connectAllCondition(
             lambda tileFrom, tileTo :  tileFrom.centerDistance( tileTo ) < 1.2
         )
+        for shape in self.shapes() :
+            shape.round(2)
+        
         return self
 
     def popRobot(self, playerId, tileId ):
@@ -89,3 +92,13 @@ class Map( htiled.Map ):
         owner= mobile.owner()
         self._mobiles[owner][ mobile.identifier()-1 ]= iTo
         return iTo
+    
+    def fromPod(self, aPod):
+        super().fromPod(aPod)
+        # Update cros knoldge:
+        for t in range( 1, self.size()+1 ):
+            for p in range( len( self.tile(t)._pieces ) ) :
+                iPlayer= self.tile(t)._pieces[p].flag(1)
+                iRobot= self.tile(t)._pieces[p].flag(2)
+                self._mobiles[iPlayer][iRobot-1]= t
+                print( f"> {self.tile(t)._pieces[p]} on {t}" )

@@ -2,52 +2,28 @@ import re, hacka.pylib as hk
 from hacka.artist import Artist
 import hacka.tiled as htiled
 
-from .map import Map
 from .gameengine import Engine
-from .mobile import Mobile
 
-class GameMaster( hk.AbsSequentialGame ) :
+class Master( hk.AbsSequentialGame ) :
 
     # Initialization:
-    def __init__( self, seed=False, numberOfPlayers=1, numberOfRobots=2 ) :
-        super().__init__( numberOfPlayers )
+    def __init__( self, game= Engine(), seed=False):
+        super().__init__( game.numberOfPlayers() )
         self._seed= seed
-        self._map= Map()
-        self._nbRobots= numberOfRobots
-        self._moves= []
-        self._maxTic= 100
-        self._countDownCycle= 100
-        self._score= [0 for p in range(numberOfPlayers) ]
-        self._moveRePattern = re.compile( "^move "+ ' '.join(["[0123456]" for i in range(numberOfRobots)])+ "$" )
-        self._moveRePatShort = re.compile( "^"+ ' '.join(["[0123456]" for i in range(numberOfRobots)])+ "$" )
-        
-        # Artist:
-        self._artist= Artist().initializePNG( "shot-moveIt.png" )
+        # GameEngine: 
+        self._engine= game
+        self._gameTic= self._engine.tic()
+
+        #self._moveRePattern = re.compile( "^move "+ ' '.join(["[0123456]" for i in range(numberOfRobots)])+ "$" )
+        #self._moveRePatShort = re.compile( "^"+ ' '.join(["[0123456]" for i in range(numberOfRobots)])+ "$" )
     
-    # Construction:
-    def initializeGrid(self, matrix, size, separetion):
-        self._map.initializeGrid( matrix, size, separetion )
-        self._artist.fitBox( self._map.box(), 10 )
-        return self
-    
-    # accessor:
-    def map(self): 
-        return self._map
-
-    def score(self):
-        return self._score
-
-    def mobiles(self):
-        return self._map._mobiles
-
     # Game interface :
     def initialize(self):
-        # clean Up.
-        for tile in self._map.tiles() :
-            tile.clear()
-        
-        pod= self._map.asPod("MoveIt")
-        return pod
+        # Clean Up.
+        #for tile in self._map.tiles() :
+        #    tile.clear()
+        # Initialize configuration :
+        return self._engine.asPod("MoveIt")
     
     def playerHand( self, iPlayer ):
         # ping with the increasing counter

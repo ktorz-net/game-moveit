@@ -13,11 +13,13 @@ sys.path.insert( 1, workdir )
 import src.hacka.games.moveit as mi
 
 def test_gameMethod():
-    game= mi.GameMaster( 38 )
+    game= mi.GameEngine()
+    master= mi.GameMaster( game )
 
-    assert( type( game.initialize().asPod() ) is hacka.Pod  )
-    assert( type( game.playerHand(1).asPod() ) is hacka.Pod )
-    assert( game.applyPlayerAction( 1, "move 0" )  )
-    game.tic()
-    assert( not game.isEnded() )
-    assert( game.playerScore(1) == 0.0 )
+    assert( type( master.initialize().asPod() ) is hacka.Pod  )
+    assert( type( master.playerHand(1).asPod() ) is hacka.Pod )
+    assert( master.applyPlayerAction( 1, "move 0" )  )
+    master.tic()
+    assert( not master.isEnded() )
+    
+    assert( master.playerScore(1) == 0.0 )
