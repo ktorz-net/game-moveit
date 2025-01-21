@@ -116,6 +116,9 @@ class Engine():
                 for mTile, clockDir in zip( self._map.mobilePositions(iPlayer), self.moveActions(iPlayer) ) ]
 
     def setMoveAction( self, iPlayer, iRobot, clockDir ):
+        # Security:
+        if not(self.isMobile(iPlayer, iRobot) and 0<= clockDir and clockDir <= 12) :
+            return False
         iTile= self._map.mobilePosition(iPlayer, iRobot)
         robot= self._map.tile(iTile).piece()
         robot.setMove(clockDir)
