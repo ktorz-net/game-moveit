@@ -52,15 +52,27 @@ class Engine():
     def mobilePosition(self, iPlayer, iRobot):
         return self._map.mobilePosition(iPlayer, iRobot)
 
+    def setMobilePosition(self, iPlayer, iRobot, iPosition):
+        iT= self.mobilePosition(iPlayer, iRobot)
+        self._map.teleport(iT, iPosition)
+        return self.mobile(iPlayer, iRobot).mission()
+
     def mobileMission(self, iPlayer, iRobot):
         return self.mobile(iPlayer, iRobot).mission()
 
     def mobile(self, iPlayer, iRobot):
         iTile= self._map.mobilePosition(iPlayer, iRobot)
         return self._map.tile(iTile).piece()
-
+    
+    def isMobile(self, iPlayer, iRobot):
+        return ( 0 <= iPlayer and iPlayer <= self.numberOfPlayers() 
+            and 0 < iRobot and iRobot <= self.numberOfRobots(iPlayer) )
+    
     def mission(self, iMission):
         return self._missions[iMission-1]
+    
+    def isMission(self, iMission):
+        return ( 0 < iMission and iMission <= len(self._missions) )
 
     def freeMissions(self):
         free= []
@@ -79,6 +91,12 @@ class Engine():
     
     def score(self, iPlayer):
         return self._scores[iPlayer]
+    
+    def filePath(self):
+        self._artist._support._filePath
+    
+    def setFilePath(self, filePath):
+        self._artist._support._filePath= filePath
     
     # Mission :
     def addMission( self, iFrom, iTo, pay= 10 ):
@@ -147,6 +165,10 @@ class Engine():
         return collision
 
     def missionAction(self, iPlayer, iRobot, iMission ):
+        # Security:
+        if not(self.isMobile(iPlayer, iRobot) and self.isMission(iMission) ) :
+            return False
+        # Localvariable:
         robot= self.mobile(iPlayer, iRobot)
         robotPos= self.mobilePosition(iPlayer, iRobot)
         iFrom, iTo, pay, owner= self.mission(iMission)

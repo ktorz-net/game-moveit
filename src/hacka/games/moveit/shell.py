@@ -20,7 +20,7 @@ class PlayerShell( pl.AbsPlayer ):
         self._board= Hexaboard()
         self._mobiles= []
         self._id= 0
-        
+
     # Player interface :
     def wakeUp(self, playerId, numberOfPlayers, gamePod):
         # Initialize from gamePod:

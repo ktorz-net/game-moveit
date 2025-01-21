@@ -2,12 +2,10 @@
 """
 MoveIt - an HackaGame Game  
 """
-import sys
-sys.path.insert( 1, __file__.split('gameMoveIt')[0] )
 
-import hacka.games.moveIt as moveit #import GameMoveIt
+import hacka.games.moveit as moveit
 #from hacka.games.moveIt.shell import PlayerShell as Player
-from hacka.pylib.command import Command, Option
+from hacka.command import Command, Option
 
 # Define a command interpreter: 2 options: host address and port:
 cmd= Command(
