@@ -35,10 +35,10 @@ def test_players_basic():
 def test_players_basic():
     game= mi.GameEngine(
         missions= [(4, 5), (7, 8)],
-    )
-    game= mi.GameEngine( tic= 10 )
+        tic= 10 )
     master= mi.GameMaster( game )
 
+    assert master._engine.missionsList() == [1, 2]
     assert master.initialize()
 
     t= 10

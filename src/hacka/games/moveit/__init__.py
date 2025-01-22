@@ -16,7 +16,6 @@ GameMaster= gamemaster.Master
 BasicBot= player.BasicBot
 ShellPlayer= player.ShellPlayer
 
-
 """
 MoveIt - an HackaGame game 
 import sys, random, re

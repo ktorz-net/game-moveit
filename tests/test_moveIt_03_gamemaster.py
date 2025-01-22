@@ -13,8 +13,8 @@ sys.path.insert( 1, workdir )
 import src.hacka.games.moveit as mi
 
 def test_gamemaster_method():
-    game= mi.GameEngine()
-    master= mi.GameMaster( game )
+    game= mi.GameEngine(missions=[(1, 2)])
+    master= mi.GameMaster( game,  )
 
     assert( type( master.initialize().asPod() ) is hacka.Pod  )
     assert( type( master.playerHand(1).asPod() ) is hacka.Pod )
@@ -25,7 +25,7 @@ def test_gamemaster_method():
     assert( master.playerScore(1) == 0.0 )
 
 def test_gamemaster_live_cycle():
-    game= mi.GameEngine( tic= 10 )
+    game= mi.GameEngine( tic= 10, missions=[(1, 2)] )
     master= mi.GameMaster( game )
 
     assert master.initialize()

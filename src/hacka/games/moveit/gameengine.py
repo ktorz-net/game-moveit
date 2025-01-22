@@ -71,8 +71,26 @@ class Engine():
     def mission(self, iMission):
         return self._missions[iMission-1]
     
+    def missionsList(self):
+        l= []
+        i= 1
+        for mFrom, mTo, pay, iPlayer in self._missions :
+            if mFrom > 0 :
+                l.append(i)
+            i+= 1
+        return l
+    
     def isMission(self, iMission):
         return ( 0 < iMission and iMission <= len(self._missions) )
+
+    def missions(self):
+        free= []
+        i=1
+        for iFrom, iTo, pay, owner in self._missions :
+            if owner == 0 :
+                free.append(i)
+            i+= 1
+        return free
 
     def freeMissions(self):
         free= []
@@ -99,6 +117,13 @@ class Engine():
         self._artist._support._filePath= filePath
     
     # Mission :
+    def clearMissions(self):
+        self._missions= []
+        for iOwner in range(self.numberOfPlayers()+1) :
+            for iRobot in range(1, self.numberOfRobots(iOwner)+1) :
+                self.mobile( iOwner, iRobot ).setMission(0)
+        return self
+
     def addMission( self, iFrom, iTo, pay= 10 ):
         self._missions.append( (iFrom, iTo, pay, 0) )
         return len(self._missions)
@@ -202,17 +227,15 @@ class Engine():
         self._artist.write( 6.6, 2.2, "Market Place:", self.marketBrush )
         self._artist._fontSize= 16
         sep= 0.0
-        i= 1
-        for mFrom, mTo, pay, iPlayer in self._missions :
-            if mFrom > 0 :
-                self._artist.write( 6.8, 1.9-sep, f".{i}", self.marketBrush) 
-                self._artist.write( 7.2, 1.9-sep, f"- {mFrom} to: {mTo}", self.marketBrush )
-                if iPlayer == 0 :
-                    self._artist.write( 8.5, 1.9-sep, f"({pay} ¢)", self.marketBrush )
-                else :
-                    self._artist.write( 8.4, 1.9-sep, f"(Team-{iPlayer})", self.marketBrush )
-                sep+= 0.24
-            i+= 1
+        for i in self.missionsList() :
+            mFrom, mTo, pay, iPlayer= self.mission(i)
+            self._artist.write( 6.8, 1.9-sep, f".{i}", self.marketBrush) 
+            self._artist.write( 7.2, 1.9-sep, f"- {mFrom} to: {mTo}", self.marketBrush )
+            if iPlayer == 0 :
+                self._artist.write( 8.5, 1.9-sep, f"({pay} ¢)", self.marketBrush )
+            else :
+                self._artist.write( 8.4, 1.9-sep, f"(Team-{iPlayer})", self.marketBrush )
+            sep+= 0.24
         # Finalize:
         self._artist.flip()
 
