@@ -18,11 +18,12 @@ gameEngine= moveit.GameEngine(
         [00, -1, 00, -1, 00, 00, 00, -1, -1, -1],
         [00, 00, 00, 00, 00, -1, 00, -1, -1, -1]
     ],
-    numberOfPlayers=1, numberOfRobot=3,
+    numberOfPlayers=2, numberOfRobot=6,
     tic= 40
 )
 
 # Then Go...
 gameMaster= moveit.GameMaster( gameEngine, randomMission=8 )
 player= ShellPlayer()
-gameMaster.launch( [player], gameEngine.numberOfPlayers() )
+player2= ShellPlayer()
+gameMaster.launch( [player, player2], gameEngine.numberOfPlayers() )

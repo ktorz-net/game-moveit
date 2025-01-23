@@ -15,7 +15,7 @@ _MoveIt_ est accéssible via son [repo-git](https://github.com/ktorz-net/game-mo
 
 Pour ce faire _MoveIt_ s'appuie sur [HackaGames](https://ktorz-net.github.io/hackagames/) une libraire modeste basée sur [ZeroMQ](https://zeromq.org/) pour séparer le processus du jeu (le maître du jeu) et les joueurs autonomes (_Bot_).
 
-[ZeroMG] se veux être une `An open-source universal messaging library`.
+_ZeroMQ_ se veux être une `An open-source universal messaging library`.
 Par universel, il faut entendre `Connecting your code in any language, on any platform`.
 Cependant, aujourd’hui _HackaGames_ est développé exclusivement sous `Python3`.
 
