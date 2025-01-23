@@ -43,7 +43,6 @@ class Master( hk.AbsSequentialGame ) :
         return self._engine.state()
 
     def applyPlayerAction( self, iPlayer, action ):
-        print( f">> applyPlayerAction: {action}" )
         # Separate moves and missions actions:
         moveActions= action.split("move")
         missionActions= moveActions[0].split("mission")

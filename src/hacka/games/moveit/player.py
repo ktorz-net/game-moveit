@@ -46,6 +46,7 @@ class BasicBot( AbsPlayer ):
         self._sumResult+= result
         self._countResult+= 1
 
+
 class ShellPlayer( BasicBot ):
     def __init__(self):
         super().__init__()
@@ -55,8 +56,14 @@ class ShellPlayer( BasicBot ):
     def wakeUp(self, playerId, numberOfPlayers, gamePod):
         super().wakeUp(playerId, numberOfPlayers, gamePod)
         self.model().render()
-        print( f"Output image : ./{self.model().filePath()}" )
+        print( f"Output image : ./shot-moveIt.png" )
         self._action= "go"
+        print( "New game..." )
+        print( "Possible Actions:" )
+        print( "   - [mission robotId missionId ...] move robotId clockDirection ... or pass" )
+        print( "   - pass" )
+        print( "   - stop (will 'pass' until the game ends)" )
+        print( "the mission part is optional and only one action per robot will be achieved" )
 
     def perceive(self, statePod):
         super().perceive(statePod)
@@ -64,7 +71,13 @@ class ShellPlayer( BasicBot ):
 
     def decide(self):
         if self._action != "stop" :
-            self._action = input('Enter your action ([mission r m] move r c OR pass): ')
+            msg= f'tic-{ self.model().tic() } | score { self.model().score(self._id) }'
+            msg+= ' - Enter your action: '
+            self._action = input(msg)
         if self._action == "stop" :
             return "pass"
         return self._action
+
+    def sleep(self, result):
+        super().sleep(result)
+        print( f"End on result: {result}" )

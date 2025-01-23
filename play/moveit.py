@@ -4,33 +4,25 @@ MoveIt - an HackaGame Game
 """
 
 import hacka.games.moveit as moveit
-#from hacka.games.moveIt.shell import PlayerShell as Player
+from hacka.games.moveit.player import ShellPlayer
 from hacka.command import Command, Option
 
-# Define a command interpreter: 2 options: host address and port:
-cmd= Command(
-        "start-server",
-        [
-            Option( "port", "p", default=1400 ),
-            Option( "seed", "s", 0, "random seed (0 == random seed)" ),
-            Option( "cycle", "c", 10, "number of cycles before game end" ),
-            Option( "number", "n", 1, "number of games" ),
-        ],
-        (
-            "star a server of MoveIt on your machine. "
-            "MoveIt do not take ARGUMENT."
-        ))
-
-# Process the command line: 
-cmd.process()
-if not cmd.ready() :
-    print( cmd.help() )
-    exit()
-
-game= moveit.GameMaster(
-    seed= cmd.option("seed"),
-    numberOfCycle= cmd.option("cycle")
+# Configure the game:
+gameEngine= moveit.GameEngine(
+    matrix= [
+        [00, 00, 00, -1, 00, 00, 00, 00, 00, 00],
+        [00, -1, 00, 00, 00, -1, 00, -1, -1, 00],
+        [00, 00, 00, -1, 00, 00, 00, -1, 00, 00],
+        [00, 00, 00, -1, 00, 00, 00, 00, 00, 00],
+        [00, -1, 00, 00, 00, -1, 00, -1, -1, -1],
+        [00, -1, 00, -1, 00, 00, 00, -1, -1, -1],
+        [00, 00, 00, 00, 00, -1, 00, -1, -1, -1]
+    ],
+    numberOfPlayers=1, numberOfRobot=3,
+    tic= 40
 )
-player= moveit.ShellPlayer()
 
-game.launch( [player], cmd.option("number") )  
+# Then Go...
+gameMaster= moveit.GameMaster( gameEngine, randomMission=8 )
+player= ShellPlayer()
+gameMaster.launch( [player], gameEngine.numberOfPlayers() )

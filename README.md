@@ -5,8 +5,8 @@ An _HackaGames_ game based on the multi-paths planning problem.
 
 ## Install:
 
-_MoveIt_ uses _pip_ for a local install. 
-The project relies on _HackaGames_ (including _hacka.pylib_, its python3 librairie).
+_MoveIt_ uses _pip_ for a local install. We supose that _python3_ and _pip_ are installed on the machine.  
+This project needs _HackaGames_ (including _hacka.pylib_, its python3 librairie).
 
 ```sh
 git clone https://github.com/ktorz-net/hackagames.git
@@ -17,21 +17,28 @@ pip install ./game-moveit
 
 ## Get Stated:
 
+For trying the game start a simple version with the `debug.py` version:
 
+```sh
+python3 ./game-moveit/play/debug.py
+```
+
+Then open `./shot-moveIt.png` file for a view of the game board.
 
 ## Documentation
 
-The documentation is on [Markdown](https://en.wikipedia.org/wiki/Markdown) format.
-It can be served as a _HTML_ web site thanks to [MkDocs](https://www.mkdocs.org/).
+_MoveIt_ is dedicated to create automous player based on AI (Artificial Intelligence) and CO (Combinatorial Optimization).
+The documentation is served on [https://ktorz-net.github.io/game-moveit/](ktorz-net.github.io/game-moveit).
 
-```sh
+
+For a local wriding, the documentation is develloped on [Markdown](https://en.wikipedia.org/wiki/Markdown) format in the `docs/` directory.
+It can be generated and served as a _HTML_ web site thanks to [MkDocs](https://www.mkdocs.org/).
+
+```
+cd game-moveit
 pip install mkdocs
 mkdocs serve
 ```
-
-You can then refer to the [http://127.0.0.1:8000/](documentation).
-However, this documentation is also on line: [https://ktorz-net.github.io/hackamove](ktorz-net.github.io/hackamove)
-
 
 ## Contribute 
 
