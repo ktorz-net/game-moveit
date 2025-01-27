@@ -57,9 +57,9 @@ class Map( htiled.Map ):
         return self.tile(iTile).adjacencies()
     
     def directions(self, iTile) : 
-        cx, cy= self.tile(iTile).center()
+        cx, cy= self.tile(iTile).center().tuple()
         neibor= self.neighbours(iTile)
-        positions= [ self.tile(i).center() for i in neibor ]
+        positions= [ self.tile(i).center().tuple() for i in neibor ]
         return [ (x-cx, y-cy) for x, y in positions ]
     
     def clockBearing(self, iTile):

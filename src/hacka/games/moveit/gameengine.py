@@ -1,5 +1,6 @@
 
 import copy, hacka
+from hacka.tiled import Float2, Shape
 
 from .map import Map
 
@@ -35,7 +36,7 @@ class Engine():
         # Initialize Artist :
         self._artist= hacka.artist.Artist().initializePNG( "shot-moveIt.png" )
         self._artist.flip()
-        self._artist.fitBox( [(-0.5, -0.5), (9.5, 6.5)], 10 )#self._map.box(), 10 )
+        self._artist.fitBox( [Float2(-0.5, -0.5), Float2(9.5, 6.5)], 10 )#self._map.box(), 10 )
         self.marketBrush= self._artist._panel[6]
         self.marketBrush.width= 8
 
