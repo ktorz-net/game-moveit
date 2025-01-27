@@ -40,6 +40,9 @@ class Engine():
         self.marketBrush.width= 8
 
     # Accessor :
+    def map(self):
+        return self._map
+    
     def numberOfPlayers(self):
         return self._numberOfPlayers
     

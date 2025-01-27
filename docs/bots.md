@@ -11,7 +11,6 @@ Pour lancer son premier Bot sur _MoveIt_ il faut alors éditer un script de lanc
 ```python
 import hacka.games.moveit as moveit
 import playground
-from hacka.command import Command, Option
 
 # Configure the game:
 gameEngine= moveit.GameEngine()
