@@ -162,14 +162,13 @@ It is also possible to add sleeping and rendering in the perception method to vi
         time.sleep(0.2)
 ```
 
-
 ### Activating a mission action:
 
-It is a litlebit more tricky as it requires to compare the position of the robot with all possible missions.
+It is a litlebit more tricky. It requires to compare the position of the robot with all possible missions.
 It is tricky ? so create a specific method.
 Alwais prefer to create new method to any other solution...
 
-So let get possible mission identifiers starting a a given positiion:
+So let get possible mission identifiers starting at a given positiion:
 
 ```python
     def missionOn(self, iTile):

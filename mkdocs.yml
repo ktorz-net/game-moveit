@@ -3,7 +3,8 @@ nav:
   - Ktorz-net <: '..'
   - Home: 'index.md'
   - Game Rules: 'rules.md'
-  - Bot player: 'bots.md'
+  - Bot Player: 'bots.md'
+  - Distance and Paths: 'dijkstra.md'
 
 markdown_extensions:
   - attr_list
