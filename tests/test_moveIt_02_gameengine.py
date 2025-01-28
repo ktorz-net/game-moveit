@@ -115,8 +115,8 @@ def test_gameengine_mission():
 
     assert game.freeMissions() == [1, 2]
 
-    assert game.mission(1) == (4, 5, 10, 0)
-    assert game.mission(2) == (7, 8, 10, 0)
+    assert game.mission(1).tuple() == (4, 5, 10, 0)
+    assert game.mission(2).tuple() == (7, 8, 10, 0)
 
     game.render()
     local.sleep()

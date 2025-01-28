@@ -21,7 +21,7 @@ def test_players_basic():
     bot= player.BasicBot()
     bot.wakeUp( 1, 2, master.initialize() )
     
-    assert bot.model().numberOfRobots() == 2
+    assert bot.model().numberOfMobiles() == 2
 
     bot.perceive( master.playerHand(1) )
     assert bot.decide() == "pass"

@@ -4,6 +4,19 @@ from hacka.tiled import Float2, Shape
 
 from .map import Map
 
+class Mission:
+    def __init__( self, start, final, reward, owner ):
+        self.start= start
+        self.final= final
+        self.reward= reward
+        self.owner= owner
+
+    def list(self):
+        return [self.start, self.final, self.reward, self.owner]
+    
+    def tuple(self):
+        return self.start, self.final, self.reward, self.owner
+
 class Engine():
 
     def __init__( self, 
@@ -47,11 +60,8 @@ class Engine():
     def numberOfPlayers(self):
         return self._numberOfPlayers
     
-    def numberOfRobots(self, iPlayer=1):
+    def numberOfMobiles(self, iPlayer=1):
         return len( self._map._mobiles[iPlayer] )
-    
-    def numberOfVips(self):
-        return len( self._map._mobiles[0] )
     
     def mobilePosition(self, iPlayer, iRobot):
         return self._map.mobilePosition(iPlayer, iRobot)
@@ -70,7 +80,7 @@ class Engine():
     
     def isMobile(self, iPlayer, iRobot):
         return ( 0 <= iPlayer and iPlayer <= self.numberOfPlayers() 
-            and 0 < iRobot and iRobot <= self.numberOfRobots(iPlayer) )
+            and 0 < iRobot and iRobot <= self.numberOfMobiles(iPlayer) )
     
     def mission(self, iMission):
         return self._missions[iMission-1]
@@ -78,8 +88,8 @@ class Engine():
     def missionsList(self):
         l= []
         i= 1
-        for mFrom, mTo, pay, iPlayer in self._missions :
-            if mFrom > 0 :
+        for m in self._missions :
+            if m.start > 0 :
                 l.append(i)
             i+= 1
         return l
@@ -88,19 +98,13 @@ class Engine():
         return ( 0 < iMission and iMission <= len(self._missions) )
 
     def missions(self):
-        free= []
-        i=1
-        for iFrom, iTo, pay, owner in self._missions :
-            if owner == 0 :
-                free.append(i)
-            i+= 1
-        return free
+        return self._missions
 
     def freeMissions(self):
         free= []
         i=1
-        for iFrom, iTo, pay, owner in self._missions :
-            if owner == 0 :
+        for m in self._missions :
+            if m.owner == 0 :
                 free.append(i)
             i+= 1
         return free
@@ -124,16 +128,16 @@ class Engine():
     def clearMissions(self):
         self._missions= []
         for iOwner in range(self.numberOfPlayers()+1) :
-            for iRobot in range(1, self.numberOfRobots(iOwner)+1) :
+            for iRobot in range(1, self.numberOfMobiles(iOwner)+1) :
                 self.mobile( iOwner, iRobot ).setMission(0)
         return self
 
     def addMission( self, iFrom, iTo, pay= 10 ):
-        self._missions.append( (iFrom, iTo, pay, 0) )
+        self._missions.append( Mission(iFrom, iTo, pay, 0) )
         return len(self._missions)
 
     def updateMission(self, iMission, iFrom, iTo, pay, owner):
-        self._missions[iMission-1]= (iFrom, iTo, pay, owner)
+        self._missions[iMission-1]= Mission(iFrom, iTo, pay, owner)
     
     # Move :
     def moveActions(self, iPlayer):
@@ -203,7 +207,7 @@ class Engine():
         # Localvariable:
         robot= self.mobile(iPlayer, iRobot)
         robotPos= self.mobilePosition(iPlayer, iRobot)
-        iFrom, iTo, pay, owner= self.mission(iMission)
+        iFrom, iTo, pay, owner= self.mission(iMission).tuple()
         # Mission start:
         if robot.mission() == 0 : 
             if robotPos == iFrom and owner == 0 :
@@ -232,7 +236,7 @@ class Engine():
         self._artist._fontSize= 16
         sep= 0.0
         for i in self.missionsList() :
-            mFrom, mTo, pay, iPlayer= self.mission(i)
+            mFrom, mTo, pay, iPlayer= self.mission(i).tuple()
             self._artist.write( 6.8, 1.9-sep, f".{i}", self.marketBrush) 
             self._artist.write( 7.2, 1.9-sep, f"- {mFrom} to: {mTo}", self.marketBrush )
             if iPlayer == 0 :
@@ -268,20 +272,20 @@ class Engine():
         podMissions= hacka.Pod( "missions" )
         i= 1
         for m in self._missions :
-            podMissions.append( hacka.Pod( f"{i}", flags=list(m) ) )
+            podMissions.append( hacka.Pod( f"{i}", flags=m.list() ) )
             i+= 1
         return podMissions
     
     def setStateMissions( self, podState ):
         self._missions= []
         for pod in podState.children() :
-            self._missions.append( (pod.flag(1), pod.flag(2),pod.flag(3), pod.flag(4)) )
+            self._missions.append( Mission(pod.flag(1), pod.flag(2),pod.flag(3), pod.flag(4)) )
         return self
     
     def stateMobiles(self):
         podMobiles= hacka.Pod( "mobiles" )
         for ip in range(self.numberOfPlayers()+1 ):
-            for ir in range( 1, self.numberOfRobots(ip)+1 ):
+            for ir in range( 1, self.numberOfMobiles(ip)+1 ):
                 pos= self.mobilePosition(ip, ir)
                 mis= self.mobileMission(ip, ir)
                 podMobiles.append( hacka.Pod( flags=[ip, ir, pos, mis] ) )
@@ -302,7 +306,7 @@ class Engine():
         # Engine :
         pod= hacka.Pod( 
             name, "",
-            [self._numberOfPlayers, self.numberOfRobots(), self.numberOfVips(), self._tic],
+            [self._numberOfPlayers, self.numberOfMobiles(), self.numberOfMobiles(0), self._tic],
             self._scores )
         # Map :
         pod.append( self._map.asPod() )
@@ -310,7 +314,7 @@ class Engine():
         podMissions= hacka.Pod( "missions" )
         i= 1
         for m in self._missions :
-            podMissions.append( hacka.Pod( f"{i}", flags=list(m) ) )
+            podMissions.append( hacka.Pod( f"{i}", flags=m.list() ) )
             i+= 1
         pod.append( podMissions )
         return pod
@@ -331,5 +335,5 @@ class Engine():
         # Missions :
         self._missions= []
         for pod in pod.child(2).children() :
-            self._missions.append( tuple(pod.flags()) )
+            self._missions.append( Mission(pod.flag(1), pod.flag(2),pod.flag(3), pod.flag(4)) )
         return self

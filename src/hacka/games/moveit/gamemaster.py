@@ -29,7 +29,7 @@ class Master( hk.AbsSequentialGame ) :
         # Clean Up.
             self._engine.clearMissions()
             for iOwner in range(self.numberOfPlayers+1) :
-                for iMob in range( 1, self._engine.numberOfRobots(iOwner)+1 ) :
+                for iMob in range( 1, self._engine.numberOfMobiles(iOwner)+1 ) :
                     self._engine.mobile(iOwner, iMob).setMission(0)
         # Set missions at random:
             for i in range( self._randomMission ) :
