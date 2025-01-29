@@ -2,7 +2,7 @@
 Test - MoveIt Robot Class
 """
 
-import hacka.pylib as hk
+import hacka.py as hk
 
 class Mobile(hk.Pod):
     FLAG_OWNER= 1

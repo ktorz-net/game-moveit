@@ -6,7 +6,7 @@ An _HackaGames_ game based on the multi-paths planning problem.
 ## Install:
 
 _MoveIt_ uses _pip_ for a local install. We supose that _python3_ and _pip_ are installed on the machine.  
-This project needs _HackaGames_ (including _hacka.pylib_, its python3 librairie).
+This project needs _HackaGames_ (including _hacka.py_, its python3 librairie).
 
 ```sh
 git clone https://github.com/ktorz-net/hackagames.git

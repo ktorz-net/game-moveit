@@ -1,7 +1,7 @@
 import sys, copy
 from . import local
 
-import hacka.pylib  as hacka
+import hacka.py  as hacka
 import hacka.artist as hartist
 import hacka.tiled  as htiled
 

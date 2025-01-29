@@ -1,4 +1,4 @@
-import random, hacka.pylib as hk
+import random, hacka.py as hk
 from hacka.artist import Artist
 import hacka.tiled as htiled
 

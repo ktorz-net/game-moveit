@@ -2,7 +2,7 @@
 Test - MoveIt Hexagonal-cells' board Class
 """
 
-import hacka.pylib as hk
+import hacka.py as hk
 
 import random
 

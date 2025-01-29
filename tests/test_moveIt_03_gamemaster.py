@@ -1,7 +1,7 @@
 import sys
 from . import local
 
-import hacka.pylib  as hacka
+import hacka.py  as hacka
 
 """
 Test - MoveIt Games Class
