@@ -14,4 +14,5 @@ GameMaster= gamemaster.Master
 
 # Players
 BasicBot= player.BasicBot
+BlindBot= player.BlindBot
 ShellPlayer= player.ShellPlayer

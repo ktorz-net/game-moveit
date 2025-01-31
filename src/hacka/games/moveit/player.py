@@ -2,7 +2,6 @@ import time
 from hacka import AbsPlayer
 from .gameengine import Engine
 
-
 class BasicBot( AbsPlayer ):
 
     # Constructor:
@@ -46,7 +45,20 @@ class BasicBot( AbsPlayer ):
         self._sumResult+= result
         self._countResult+= 1
 
+class BlindBot( BasicBot ):
+    def __init__(self, actionsList= ['pass'], numberRobots=1):
+        super().__init__()
+        self._actions= actionsList
+        self._step= -1
+        self._fleetSize= numberRobots
 
+    def decide(self):
+        # Follow the order
+        self._step+= 1
+        if self._step == len(self._actions) :
+            self._step= 0
+        return self._actions[self._step]
+    
 class ShellPlayer( BasicBot ):
     def __init__(self):
         super().__init__()

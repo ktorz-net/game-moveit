@@ -43,21 +43,21 @@ class FirstBot():
         print( f"end on : {result}" )
 ```
 
-Dans la mesure ou `FirstBot` définie les méthodes appropriées avec les parramétres cohérents, une instance de `FirstBot` pourra jouer dans un jeu _HackaGames_. Naturellement, dans l'état, le résultat sera null.
+Dans la mesure où `FirstBot` définit les méthodes appropriées avec les paramètres cohérents, une instance de `FirstBot` pourra jouer dans un jeu _HackaGames_. Naturellement, dans l'état, le résultat sera nul.
 
 ```sh
 python3 launch.py
 ```
 
-Le `gameConfiguration` de la méthode `wakeUp` défini le plateau de jeu.
-Les cellules et comment elles sont connecté les unes au autre. 
-Au passage on a dés le `wakeUp`, la position des robots et le 'Market Place' avec les missions diponible.
+Le `gameConfiguration` de la méthode `wakeUp` définit le plateau de jeu.
+Les cellules et comment elles sont connectées les unes aux autres. 
+Au passage on a dés le `wakeUp`, la position des robots et le 'Market Place' avec les missions disponibles.
 
-Ensuite, la méthode `perceive` avec cont parramétre `state` ne va renseigner que sur l'avancé du jeux. Le positionnement des robots surle plateau et l'avancé des missions.
+Ensuite, la méthode `perceive` avec comme paramètre `state` ne va renseigner que sur l'avancée du jeu. Le positionnement des robots sur le plateau et l'avancée des missions.
 
-Cependant il n'est pas utile de rentre dans le détail des object `gameConfiguration` et `state`. 
-Il est possible de charger un modéle du jeu, avec la class `GameEngine` du package python `moveIt`.
-Il sera alors possible de carger la caonfiguration du jeu et de mettre à jour son état simplement:
+Cependant il n'est pas utile de rentre dans le détail des objets `gameConfiguration` et `state`. 
+Il est possible de charger un modèle du jeu, avec la class `GameEngine` du package python `moveIt`.
+Il sera alors possible de charger la configuration du jeu et de mettre à jour son état simplement:
 
 ```python
 from hacka.games.moveit import GameEngine
@@ -74,17 +74,17 @@ def perceive(self, state ):
     self._model.setOnState(state)           # Update the model sate
 ```
 
-Then model will be querry throught its methods (look at [inspect](https://docs.python.org/3/library/inspect.html) python package for instance). 
+Then model will be queried through its methods (look at [inspect](https://docs.python.org/3/library/inspect.html) python package for instance). 
 
 
 ## _MoveIt_ Classes
 
 _MoveIt_ game is mainly based on *3* classe: 
 
-- `GameEngine`: it manageges the games elements and the game rules.
-- `Map`: based on `Hackapy::tiled.Map`, it represents the environement as a grath of interconnected tiles.
-- `Mobile`: the mobile objectis on the `Map` (Robots, and Vips).
-
+- `GameEngine`: it manages the game elements and the game rules.
+- `Map`: based on `Hackapy::tiled.Map`, it represents the environment as a graph of interconnected tiles.
+- `Mobile`: the mobile objects on the `Map` (Robots, and Vips).
+- `Mission`: the mission objects with `start` and `final` positions plus `reward` and `owner` information.
 
 ### `GameEngine` Class's methods:
 
@@ -103,8 +103,9 @@ _MoveIt_ game is mainly based on *3* classe:
 
 ### `Map` Class's methods:
 
-To notice that _MoveIt_ `Map` inherits from _HackaGames_ `Map`, with tiles management and drawing handled at the parent level.
+To notice that _MoveIt_ `Map` inherits from _HackaGames_ `Map`, with tile management and drawing handled at the parent level.
 
+- **`size()`** - Return the number of tiles on the map.
 - **`neighbours(iTile)`** - Return the tile's identifiers of connected tiles to the `iTile`th tile.
 - **`clockBearing(iTile)`** - Retrun the list of possible movement for a mobile on the `iTile`th tile.
 - **`clockposition(iTile, clockDir)`** - Return the identifier of reached tile by moving toward the `clockDir` direction from the `iTile`th tile.
@@ -113,7 +114,7 @@ To notice that _MoveIt_ `Map` inherits from _HackaGames_ `Map`, with tiles manag
 ### `Mobile` Class's methods:
 
 - **`owner(self)`** - Retrun the owner identifier, the player number or $0$ if it is a Vip.
-- **`identifier(self)`** - Return the identifier in the owner's mobile lists (starting from $1$).
+- **`identifier(self)`** - Return identifier in the owner's mobile lists (starting from $1$).
 - **`mission(self)`** - Return the mission the mobile is in charge and $0$ if it does not have any.
 
 
@@ -137,7 +138,7 @@ gameEngine= moveit.GameEngine(
 
 The first part is quite simple. 
 It requires to read robot position, to get possible movements and to choose one randomly.
-According to the _MoveIT_ _API_, an imformative implementation of `decide` methode will looklike: 
+According to the _MoveIT_ _API_, an informative implementation of `decide` method will lookalike: 
 
 ```python
     def decide(self):
@@ -151,7 +152,7 @@ According to the _MoveIT_ _API_, an imformative implementation of `decide` metho
         return f"move 1 {self._move}"
 ```
 
-To notice that, removing $0$ from the possible directions will allows the robot to move/explore more.
+To notice that, removing $0$ from the possible directions will allow the robot to move/explore more.
 
 It is also possible to add sleeping and rendering in the perception method to visualize the robot behavior.
 
@@ -164,11 +165,11 @@ It is also possible to add sleeping and rendering in the perception method to vi
 
 ### Activating a mission action:
 
-It is a litlebit more tricky. It requires to compare the position of the robot with all possible missions.
+It becomes trickier a litlebit. It requires to compare the position of the robot with all possible missions.
 It is tricky ? so create a specific method.
-Alwais prefer to create new method to any other solution...
+Always prefer to create new method compared to any other solution...
 
-So let get possible mission identifiers starting at a given positiion:
+So let get possible mission identifiers starting at a given position:
 
 ```python
     def missionOn(self, iTile):
@@ -183,7 +184,7 @@ So let get possible mission identifiers starting at a given positiion:
 
 From that point we can start a mission if the robot does not have one (`self._model.mobile(1, 1).mission() == 0`) and if it is on a tile matching a mission start (`len( self.missionOn( robotPosition ) ) > 0`).
 
-We need also to activate mission action when the robot reach the final point of the mission :
+We also need to activate mission action when the robot reach the final point of the mission :
 
 ```python
         robot1Position= self._model.mobilePosition(self._id, 1)
@@ -191,13 +192,13 @@ We need also to activate mission action when the robot reach the final point of 
         if robot1Position == self._model.mission( robot1Mission ).final :
 ```
 
-At this point our first bot should move randomly, and activate mission each time it is possible.
+At this point our first bot should move randomly, and activate missions each time it is possible.
 
 
 ### Going further: Multi-Robots...
 
-The proosed _FirstBot_ only handle one robot associated to the player. 
-In case of multi-robot control, the _FirstBot_ should repeat the decision process over all robots by agregating _'mission'_ and _'move'_ orders.
+The proposed _FirstBot_ only handle one robot associated to the player. 
+In case of multi-robot control, the _FirstBot_ should repeat the decision process over all robots by aggregating _'mission'_ and _'move'_ orders.
 
-Then with multiple robots moving on a same environement, the AI should avaoid collision.
-A robot canot target a position currently taken by another robot and tow robot canot move on the same tile.
+Then with multiple robots moving on a same environment, the AI should avoid collision.
+A robot cannot target a position currently taken by another robot and tow robot cannot move on the same tile.
