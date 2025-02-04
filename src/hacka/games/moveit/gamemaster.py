@@ -14,6 +14,9 @@ class Master( hk.AbsSequentialGame ) :
         self._engine= game
         self._gameTic= self._engine.tic()
         self._randomMission= randomMission
+        # GameEngine:  
+        self.computeDistances()
+        self.initializeVipsBehavior()
 
     def addRandomMission(self):
         bound= self._engine._map.size()+1
@@ -34,9 +37,13 @@ class Master( hk.AbsSequentialGame ) :
         # Set missions at random:
             for i in range( self._randomMission ) :
                 self.addRandomMission()
+        else :
+            pass
         #for tile in self._map.tiles() :
         #    tile.clear()
         # Initialize configuration :
+        #self.computeDistances()
+        self.initializeVipsBehavior()
         return self._engine.asPod("MoveIt")
     
     def playerHand( self, iPlayer ):        
@@ -81,3 +88,115 @@ class Master( hk.AbsSequentialGame ) :
     def playerScore( self, iPlayer ):
         # All players are winners.
         return self._engine.score(iPlayer)
+
+    # map tools:
+    def mapSize(self):
+        return self._engine._map.size()
+    
+    def computeDistances(self):
+        s= self.mapSize()
+        self._distances= [ [ i for i in range(s+1) ] ]
+        for i in range( 1, s+1 ) :
+            dist= self.computeDistancesTo(i)
+            self._distances.append( dist )
+
+    def computeDistancesTo(self, iTile):
+        gameMap= self._engine.map()
+        # Initialize distances to 0:
+        dists= [iTile] +  [0 for i in range( gameMap.size() )]
+        # Initialize step from iTile:
+        ringNodes= gameMap.neighbours(iTile)
+        ringDistance= 1
+        # while theire is nodes to visit
+        while len(ringNodes) > 0 :
+            nextNodes= []
+            # Visit all step nodes:
+            for node in ringNodes :
+                # Update distance information
+                dists[node]= ringDistance
+            for node in ringNodes :
+                # Search for new tile to visit:
+                neighbours= gameMap.neighbours(node)
+                for candidate in neighbours :
+                    if dists[candidate] == 0 :
+                         nextNodes.append(candidate)
+            # swith to the next step.
+            ringNodes= nextNodes
+            ringDistance+= 1
+        # Correct 0 distance:
+        dists[iTile]= 0
+        return dists
+    
+    def toward(self, iTile, iTarget):
+        gameMap= self._engine.map()
+        # If no need to move:
+        if iTile == iTarget :
+            return 0, iTile
+        # Get candidates:
+        clockdirs= gameMap.clockBearing(iTile)
+        nextTiles= gameMap.neighbours(iTile)
+        selectedDir= clockdirs[0]
+        selectedNext= nextTiles[0]
+        # Test all candidates:
+        for clock, tile in zip( clockdirs, nextTiles ) :
+            if self._distances[tile][iTarget] < self._distances[selectedNext][iTarget] :
+                selectedDir= clock
+                selectedNext= tile
+        # Return the selected candidates:
+        return selectedDir, selectedNext
+
+    def moveOptions(self, iTile, iTarget):
+        gameMap= self._engine.map()
+        print( f"moveOptions: {iTile} > {iTarget}" )
+        # If no need to move:
+        if iTile == iTarget :
+            return [(0, iTile)]
+        # Get candidates:
+        clockdirs= gameMap.clockBearing(iTile)
+        nextTiles= gameMap.neighbours(iTile)
+        selected= [ (clockdirs[0], nextTiles[0]) ]
+        refDist= self._distances[nextTiles[0]][iTarget]
+
+        print( f" - start with: {selected}: {refDist}" )
+        # Test all candidates:
+        for clock, tile in zip( clockdirs[1:], nextTiles[1:] ) :
+            print( f" - test {(clock, tile)}: {self._distances[tile][iTarget]}" )
+            if self._distances[tile][iTarget] == refDist :
+                selected.append( (clock, tile) )
+            elif self._distances[tile][iTarget] < refDist :
+                selected= [ (clock, tile) ]
+                refDist= self._distances[tile][iTarget]
+            
+        # Return the selected candidates:
+        return selected
+
+    def path(self, iTile, iTarget):
+        clock, tile= self.toward(iTile, iTarget)
+        move= [clock]
+        path= [tile]
+        while tile != iTarget :
+            clock, tile= self.toward(tile, iTarget)
+            move.append( clock )
+            path.append( tile )
+        return move, path
+    
+    # Vips managment: 
+    def initializeVipsBehavior(self):
+        self._vipsGoals= [ p for p in self.vipPositions() ]
+
+    def numberOfVips(self):
+        return self._engine.numberOfMobiles(0)
+
+    def vipPositions(self) :
+        n= self.numberOfVips()
+        return [ self._engine.mobilePosition(0, i) for i in range(1, n+1) ]
+
+    def vipGoals(self) :
+        return self._vipsGoals
+    
+    def vipMoves(self) :
+        moves= []
+        for p, g in zip( self.vipPositions(), self.vipGoals() ) :
+            opts= self.moveOptions( p, g )
+            moves.append( opts[0][0] )
+        return moves
