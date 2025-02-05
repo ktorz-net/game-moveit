@@ -150,7 +150,7 @@ class Engine():
 
     def setMoveAction( self, iPlayer, iRobot, clockDir ):
         # Security:
-        if not(self.isMobile(iPlayer, iRobot) and 0<= clockDir and clockDir <= 12) :
+        if not(self.isMobile(iPlayer, iRobot) and 0 <= clockDir and clockDir <= 12) :
             return False
         iTile= self._map.mobilePosition(iPlayer, iRobot)
         robot= self._map.tile(iTile).piece()
@@ -161,7 +161,6 @@ class Engine():
         collision= 0
         reserved= []
         blocked= []
-        # Move Vips:
 
         # Get players moves:
         moves= [[]]
@@ -195,6 +194,22 @@ class Engine():
                     collision+= 1
                 else:
                     self._map.teleport( m[0], m[1] )
+        
+        # Move Vips:
+        for iFrom, iTo in zip( self._map.mobilePositions(0), self.moveDestinations(0) ) :
+            if iFrom == iTo :
+                pass
+            elif self._map.tile(iTo).count() == 0 :
+                #print( f"Move vip from {iFrom} to {iTo}" )
+                self._map.teleport( iFrom, iTo )
+            elif self._map.tile(iTo).piece().owner() == 0 :
+                #print( f"Ok Boom" )
+                pass
+            else :
+                self._scores[iPlayer]+= -100
+                iPlayer= self._map.tile(iTo).piece().owner()
+                #print( f"Boom {iPlayer}" )
+
         # Clean moves:
         self._map.initializeMoves()
         self._tic-= 1

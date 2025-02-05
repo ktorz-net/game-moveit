@@ -79,6 +79,7 @@ class Master( hk.AbsSequentialGame ) :
         return True
     
     def tic( self ):
+        self.activateVips()
         self._engine.applyMoveActions()
     
     def isEnded( self ):
@@ -147,7 +148,6 @@ class Master( hk.AbsSequentialGame ) :
 
     def moveOptions(self, iTile, iTarget):
         gameMap= self._engine.map()
-        print( f"moveOptions: {iTile} > {iTarget}" )
         # If no need to move:
         if iTile == iTarget :
             return [(0, iTile)]
@@ -156,8 +156,6 @@ class Master( hk.AbsSequentialGame ) :
         nextTiles= gameMap.neighbours(iTile)
         selected= [ (clockdirs[0], nextTiles[0]) ]
         refDist= self._distances[nextTiles[0]][iTarget]
-
-        print( f" - start with: {selected}: {refDist}" )
         # Test all candidates:
         for clock, tile in zip( clockdirs[1:], nextTiles[1:] ) :
             print( f" - test {(clock, tile)}: {self._distances[tile][iTarget]}" )
@@ -200,3 +198,10 @@ class Master( hk.AbsSequentialGame ) :
             opts= self.moveOptions( p, g )
             moves.append( opts[0][0] )
         return moves
+    
+    def activateVips(self) :
+        vipIds= range( 1, self.numberOfVips()+1 )
+        for i, m in zip( vipIds, self.vipMoves() ) :
+            self._engine.setMoveAction(0, i, m)
+            if m == 0 :
+                self._vipsGoals[i-1] = random.choice( range(self.mapSize()) ) +1
