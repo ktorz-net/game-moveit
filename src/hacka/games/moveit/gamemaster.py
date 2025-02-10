@@ -88,7 +88,7 @@ class Master( hk.AbsSequentialGame ) :
 
     def playerScore( self, iPlayer ):
         # All players are winners.
-        return self._engine.score(iPlayer)
+        return self._engine.score(iPlayer) + self._engine.tic()
 
     # map tools:
     def mapSize(self):

@@ -13,16 +13,22 @@ sys.path.insert( 1, workdir )
 import src.hacka.games.moveit as mi
 
 def test_gamemaster_method():
-    game= mi.GameEngine(missions=[(1, 2)])
-    master= mi.GameMaster( game,  )
+    game= mi.GameEngine( missions=[(1, 2)], tic=20)
+    master= mi.GameMaster( game )
 
     assert( type( master.initialize().asPod() ) is hacka.Pod  )
     assert( type( master.playerHand(1).asPod() ) is hacka.Pod )
     assert( master.applyPlayerAction( 1, "move 1 0" )  )
+    
     master.tic()
     assert( not master.isEnded() )
     
-    assert( master.playerScore(1) == 0.0 )
+    assert( master.playerScore(1) == 19.0 )
+
+    master.tic()
+    assert( not master.isEnded() )
+    
+    assert( master.playerScore(1) == 18.0 )
 
 def test_gamemaster_live_cycle():
     game= mi.GameEngine( tic= 10, missions=[(1, 2)] )
