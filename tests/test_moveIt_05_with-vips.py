@@ -21,7 +21,6 @@ def test_vips_basic():
     assert game.numberOfMobiles(0) == 1
     assert game.mobilePosition(0, 1) == 8
 
-
 def test_vips_basic():
     game= mi.GameEngine(
         matrix= [

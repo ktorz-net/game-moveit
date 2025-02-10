@@ -3,8 +3,12 @@ nav:
   - Ktorz-net <: '..'
   - Home: 'index.md'
   - Game Rules: 'rules.md'
-  - Bot Player: 'bots.md'
-  - Distance and Paths: 'dijkstra.md'
+  - first AI:
+    - Bot Player: 'bots.md'
+    - Distance and Paths: 'dijkstra.md'
+  - Agile Dev.:
+    - Iterative process: 'iterative.md'
+    - Test driven: 'tests.md'
   - F.A.Q: 'faq.md'
 
 markdown_extensions:
