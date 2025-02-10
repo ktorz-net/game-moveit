@@ -14,7 +14,7 @@ from src.hacka.games.moveit import player
 
 def test_vips_basic():
     game= mi.GameEngine(
-        numberOfRobot= 2,
+        numberOfRobots= 2,
         missions= [(4, 5), (7, 8)],
         numberOfPVips= 1
     )
@@ -29,7 +29,7 @@ def test_vips_basic():
             [00, 00, 00], #  6  7  8
             [00, -1, 00]  #  9    10
         ],
-        numberOfRobot= 2,
+        numberOfRobots= 2,
         missions= [(4, 5), (7, 8)],
         numberOfPVips= 2
     )
@@ -69,7 +69,7 @@ def test_vips_basic():
             [00, 00, 00], #  6  7  8
             [00, -1, 00]  #  9    10
         ],
-        numberOfRobot= 2,
+        numberOfRobots= 2,
         missions= [(4, 5), (7, 8)],
         numberOfPVips= 2
     )

@@ -11,12 +11,12 @@ with open( sys.argv[1] ) as file:
 gameEngine= moveit.GameEngine(
     matrix= dico['matrix'],
     tic= dico['tic'],
-    numberOfPlayers=1, numberOfRobot=1,
-    numberOfPVips= 1
+    numberOfPlayers= dico['numberOfPlayers'], numberOfRobots= dico['numberOfRobots'],
+    numberOfPVips= dico['numberOfPVips']
 )
 
 # Then Go...
-gameMaster= moveit.GameMaster( gameEngine, randomMission=4 )
+gameMaster= moveit.GameMaster( gameEngine, randomMission= dico['numberOfMissions'])
 player= ShellPlayer()
 #player= bot.VoidBot()
 gameMaster.launch( [player] )

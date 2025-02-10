@@ -14,7 +14,7 @@ from src.hacka.games.moveit import player
 
 def test_players_basic():
     game= mi.GameEngine(
-        numberOfRobot= 2,
+        numberOfRobots= 2,
         missions= [(4, 5), (7, 8)],
     )
 
@@ -136,7 +136,7 @@ def test_players_2players():
                 [00, 00, -1],
                 [00, 00, 00],
                 [00, -1, 00] ],
-        numberOfPlayers=2, numberOfRobot=1, tic= 20,
+        numberOfPlayers=2, numberOfRobots=1, tic= 20,
         missions= [(9, 9), (3, 8), (10, 7), (2, 9)]
     )
 
@@ -207,7 +207,7 @@ def test_players_2playersBis():
                 [00, 00, -1],
                 [00, 00, 00],
                 [00, -1, 00] ],
-        numberOfPlayers=2, numberOfRobot=1, tic= 20,
+        numberOfPlayers=2, numberOfRobots=1, tic= 20,
         missions= [(9, 9), (3, 8), (10, 7), (2, 9)]
     )
 

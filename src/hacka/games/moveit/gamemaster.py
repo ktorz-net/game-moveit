@@ -50,6 +50,25 @@ class Master( hk.AbsSequentialGame ) :
         return self._engine.state()
 
     def applyPlayerAction( self, iPlayer, action ):
+        decompo= action.split(" ")
+        if 'move' in decompo or 'mission' in decompo :
+            return self.applyPlayerMoveMissionAction(iPlayer, action)
+        iRobot= 1
+        while len(decompo) > 0 :
+            act= decompo.pop(0)
+            if act == 'go' :
+                clockDir= int(decompo.pop(0))
+                self._engine.setMoveAction(iPlayer, iRobot, clockDir)
+            elif act == 'act' :
+                missionId= int(decompo.pop(0))
+                self._engine.missionAction(iPlayer, iRobot, missionId)
+            elif act != 'pass' :
+                break
+            iRobot+=1
+
+        return self.applyPlayerMoveMissionAction(iPlayer, action)
+
+    def applyPlayerMoveMissionAction( self, iPlayer, action ):
         # Separate moves and missions actions:
         moveActions= action.split("move")
         missionActions= moveActions[0].split("mission")
@@ -158,7 +177,6 @@ class Master( hk.AbsSequentialGame ) :
         refDist= self._distances[nextTiles[0]][iTarget]
         # Test all candidates:
         for clock, tile in zip( clockdirs[1:], nextTiles[1:] ) :
-            print( f" - test {(clock, tile)}: {self._distances[tile][iTarget]}" )
             if self._distances[tile][iTarget] == refDist :
                 selected.append( (clock, tile) )
             elif self._distances[tile][iTarget] < refDist :

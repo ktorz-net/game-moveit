@@ -21,7 +21,7 @@ class Engine():
 
     def __init__( self, 
                  matrix= [[0, 0, 0],[0, -1, 0],[0, 0, 0]],
-                 numberOfPlayers=1, numberOfRobot=1,
+                 numberOfPlayers=1, numberOfRobots=1,
                  numberOfPVips=0,
                  missions= [],
                  tic= 100 ):
@@ -35,7 +35,7 @@ class Engine():
         # Initialize Robots
         iTile= 1
         for pId in range(1, numberOfPlayers+1) :
-            for iRobot in range(numberOfRobot) :
+            for iRobot in range(numberOfRobots) :
                 self._map.popRobot( pId, iTile )
                 iTile+=1
         # Players: 
