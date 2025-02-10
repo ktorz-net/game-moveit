@@ -1,4 +1,4 @@
-from hacka.games.moveit import GameEngine, GameMaster
+from hacka.games.moveit import GameEngine
 import bot
 
 def test_gamemaster_distances_path():
@@ -11,7 +11,6 @@ def test_gamemaster_distances_path():
         ],
         tic= 10, missions= [(4, 5), (7, 8)] )
     myBot= bot.VoidBot()
-
     myBot.wakeUp( 1, 1, game.asPod() )
 
     assert myBot._model.map().size() == 11

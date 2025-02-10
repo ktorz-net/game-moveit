@@ -10,7 +10,7 @@ In Python: the tool `pytest` allows developper to test the code very easely.
 Initialize a test environment: 
 
 ```python
-from hacka.games.moveit import GameEngine, GameMaster
+from hacka.games.moveit import GameEngine
 import bot
 
 def test_gamemaster_distances_path():

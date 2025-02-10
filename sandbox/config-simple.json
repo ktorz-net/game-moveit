@@ -5,5 +5,10 @@
         [0, 0, 0],
         [0, -1, 0]
     ],
-    "tic": 20
+    "tic": 20,
+    "numberOfMissions": 3,
+    "numberOfPlayers": 1,
+    "numberOfRobots": 1,
+    "numberOfPVips": 1,
+    "vipZones": [1, 2, 3, 9, 10]
 }

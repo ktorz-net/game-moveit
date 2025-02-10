@@ -16,7 +16,7 @@ gameEngine= moveit.GameEngine(
 )
 
 # Then Go...
-gameMaster= moveit.GameMaster( gameEngine, randomMission= dico['numberOfMissions'])
+gameMaster= moveit.GameMaster( gameEngine, randomMission= dico['numberOfMissions'], vipZones= [1])
 player= ShellPlayer()
 #player= bot.VoidBot()
 gameMaster.launch( [player] )

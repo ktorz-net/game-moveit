@@ -7,7 +7,7 @@ from .gameengine import Engine
 class Master( hk.AbsSequentialGame ) :
 
     # Initialization:
-    def __init__( self, game= Engine(), randomMission= 0, seed=False, ):
+    def __init__( self, game= Engine(), randomMission= 0, seed=False, vipZones= None ):
         super().__init__( game.numberOfPlayers() )
         self._seed= seed
         # GameEngine: 
@@ -17,6 +17,10 @@ class Master( hk.AbsSequentialGame ) :
         # GameEngine:  
         self.computeDistances()
         self.initializeVipsBehavior()
+        # Vips goal zones: 
+        self._vipZones= range( 1, self.mapSize()+1 )
+        if vipZones :
+            self._vipZones= vipZones
 
     def addRandomMission(self):
         bound= self._engine._map.size()+1
@@ -222,4 +226,4 @@ class Master( hk.AbsSequentialGame ) :
         for i, m in zip( vipIds, self.vipMoves() ) :
             self._engine.setMoveAction(0, i, m)
             if m == 0 :
-                self._vipsGoals[i-1] = random.choice( range(self.mapSize()) ) +1
+                self._vipsGoals[i-1] = random.choice( self._vipZones )
