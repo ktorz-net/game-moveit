@@ -1,8 +1,8 @@
-import hacka.tiled as htiled
 
 from .mobile import Mobile
+from . import tiled
 
-class Map( htiled.Map ):
+class Map( tiled.Map ):
     def __init__(self, numberOfPlayers= 1):
         super().__init__()
         self._mobiles= [ [] for i in range( numberOfPlayers+1 ) ]

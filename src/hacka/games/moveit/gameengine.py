@@ -1,6 +1,7 @@
 
 import copy, hacka
-from hacka.tiled import Float2, Shape
+from .tiled import Float2, Shape
+from . import artist
 
 from .map import Map
 
@@ -47,7 +48,7 @@ class Engine():
             self.addMission(iFrom, iTo)
         self._tic= tic
         # Initialize Artist :
-        self._artist= hacka.artist.Artist().initializePNG( "shot-moveIt.png" )
+        self._artist= artist.Artist().initializePNG( "shot-moveIt.png" )
         self._artist.flip()
         self._artist.fitBox( [Float2(-0.5, -0.5), Float2(9.5, 6.5)], 10 )#self._map.box(), 10 )
         self.marketBrush= self._artist._panel[6]

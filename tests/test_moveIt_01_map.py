@@ -2,9 +2,6 @@ import sys, copy
 from . import local
 
 import hacka.py  as hacka
-import hacka.artist as hartist
-import hacka.tiled  as htiled
-
 
 """
 Test - MoveIt Games Class
@@ -39,7 +36,7 @@ def test_moveIt_board():
     # Game MoveIt:
     map= mi.Map(numberOfPlayers=2)
     map.initializeGrid( copy.deepcopy( refMatrix ), 0.9, 0.1 )
-    artist= hartist.Artist().initializePNG( "shot-moveIt.png" )
+    artist= mi.Artist().initializePNG( "shot-moveIt.png" )
     artist.fitBox( map.box(), 10 )
 
     artist.drawMap( map )
@@ -116,7 +113,7 @@ def test_moveIt_robots():
     assert map.move( 39,  0 ) == 39
     assert map.move( 39,  3 ) == False
     
-    artist= hartist.Artist().initializePNG( "shot-moveIt.png" )
+    artist= mi.Artist().initializePNG( "shot-moveIt.png" )
     artist.fitBox( map.box(), 10 )
     
     artist.drawMap( map )

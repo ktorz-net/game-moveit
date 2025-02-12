@@ -1,6 +1,6 @@
 import random, hacka.py as hk
-from hacka.artist import Artist
-import hacka.tiled as htiled
+from .artist import Artist
+#from  ... import tiled
 
 from .gameengine import Engine
 
