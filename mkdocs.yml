@@ -10,6 +10,8 @@ nav:
     - Iterative process: 'iterative.md'
     - Test driven: 'tests.md'
   - F.A.Q: 'faq.md'
+  # Resources:
+  - '' : "resources/launcher.zip"
 
 markdown_extensions:
   - attr_list

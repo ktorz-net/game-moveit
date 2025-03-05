@@ -66,6 +66,8 @@ def test_moveIt_neibors():
     map= mi.Map( numberOfPlayers=2 )
     map.initializeGrid( copy.deepcopy( refMatrix ), 0.9, 0.1 )
 
+    print( f">>> {map.neighbours(11)}" )
+
     assert map.neighbours(11) == [3, 11, 12, 18]
     assert map.directions(11) == [(0.0, 1.0), (0.0, 0.0), (1.0, 0.0), (0.0, -1.0)]
     assert map.clockBearing(11) == [12, 0, 3, 6]

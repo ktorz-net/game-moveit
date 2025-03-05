@@ -19,4 +19,4 @@ gameEngine= moveit.GameEngine(
 gameMaster= moveit.GameMaster( gameEngine, randomMission= dico['numberOfMissions'], vipZones= [1])
 player= ShellPlayer()
 #player= bot.VoidBot()
-gameMaster.launch( [player] )
+gameMaster.launch( [player, ShellPlayer()] )
