@@ -41,7 +41,7 @@ class Master( hk.AbsSequentialGame ) :
         # Set missions at random:
             for i in range( self._randomMission ) :
                 self.addRandomMission()
-        self._engine.setTic( self._gameTic )
+        self._engine.reInit( self._gameTic )
         #else :
         #    pass
         #for tile in self._map.tiles() :

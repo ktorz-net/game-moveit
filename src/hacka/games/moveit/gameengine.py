@@ -54,6 +54,10 @@ class Engine():
         self.marketBrush= self._artist._panel[6]
         self.marketBrush.width= 8
 
+    def reInit( self, clixNumber ):
+        self._tic= clixNumber
+        self._scores= [ 0.0 for i in range( self.numberOfPlayers()+1 ) ]
+
     # Accessor :
     def map(self):
         return self._map
@@ -112,10 +116,7 @@ class Engine():
     
     def tic( self ):
         return self._tic
-    
-    def setTic( self, clixNumber ):
-        self._tic= clixNumber
-    
+        
     def score(self, iPlayer):
         return self._scores[iPlayer]
     

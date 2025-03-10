@@ -178,7 +178,13 @@ def test_gamemaster_loops():
     assert master._engine._tic == 8
     assert master._engine._map._mobiles == [[], [5]]
 
+    assert master.playerScore(1) == 8.0
+    
+    master._engine._scores= [0, 100.0]
+    assert master.playerScore(1) == 108.0
+
     master.initialize()
 
     assert master._engine._tic == 10
     assert master._engine._map._mobiles == [[], [5]]
+    assert master.playerScore(1) == 10.0
