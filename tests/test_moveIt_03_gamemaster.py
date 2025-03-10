@@ -147,3 +147,38 @@ def test_gamemaster_options():
     assert master.moveOptions(5, 11) == [(6, 8)]
     assert master.moveOptions(5, 12) == [(3, 6), (6, 8)]
 
+
+def test_gamemaster_loops():
+    game= mi.GameEngine(
+        matrix= [
+            [00, 00, 00, 00],
+            [-1, 00, -1, -1],
+            [00, 00, 00, 00],
+            [00, -1, -1, 00]
+        ],
+        tic= 10 )
+    master= mi.GameMaster( game, randomMission=4 )
+
+    assert master._engine._map._mobiles == [[], [1]]
+    assert master._engine._missions  == []
+
+    master.initialize()
+    assert len( master._engine._missions ) == 4
+    assert master._engine._tic == 10
+
+    master._engine.setMoveAction(1, 1, 3)
+    master._engine.applyMoveActions()
+
+    assert master._engine._tic == 9
+    assert master._engine._map._mobiles == [[], [2]]
+
+    master._engine.setMoveAction(1, 1, 6)
+    master._engine.applyMoveActions()
+
+    assert master._engine._tic == 8
+    assert master._engine._map._mobiles == [[], [5]]
+
+    master.initialize()
+
+    assert master._engine._tic == 10
+    assert master._engine._map._mobiles == [[], [5]]
