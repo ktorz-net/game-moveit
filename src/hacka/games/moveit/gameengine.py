@@ -334,7 +334,12 @@ class Engine():
             i+= 1
         pod.append( podMissions )
         return pod
-    
+
+    def copy(self):
+        cpy= type(self)()
+        cpy.fromPod( self.asPod() )
+        return cpy
+
     def fromPod(self, pod):
         # Engine :
         self._numberOfPlayers= pod.flag(1)

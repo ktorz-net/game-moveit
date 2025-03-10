@@ -113,6 +113,8 @@ class Map( tiled.Map ):
         tile._points= [ tiled.Float2(x, y) for x, y in zip(xs[1:], ys[1:]) ]
         # Load pices:
         tile._pieces= [ Mobile().fromPod(p) for p in aPod.children() ]
+        tile._piecesBrushId = [ 10+mob.owner() for mob in tile._pieces ]
+        tile._piecesShapeId = [ 0 for mob in tile._pieces ]
         return tile
 
     def fromPod(self, aPod):
