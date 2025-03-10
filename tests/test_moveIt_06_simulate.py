@@ -67,6 +67,7 @@ def test_gameengine_tools():
     
     gameCopy.setMoveAction(1, 1, 6)
     gameCopy.setMoveAction(2, 3, 3)
+    gameCopy.setMoveAction(0, 1, 12)
     gameCopy.applyMoveActions()
 
     gameCopy.render()
@@ -97,13 +98,14 @@ def test_gameengine_copy():
     
     aCopy.setMoveAction(1, 1, 6)
     aCopy.setMoveAction(2, 3, 3)
+    aCopy.setMoveAction(0, 1, 12)
     aCopy.applyMoveActions()
 
     model.render()
     shotFile= open( "shot-moveIt.png", mode='rb' ).read()
     refsFile= open( "tests/refs/06-simulate-01.png", mode='rb' ).read()
     assert( shotFile == refsFile )
-    
+
     aCopy.render()
     shotFile= open( "shot-moveIt.png", mode='rb' ).read()
     refsFile= open( "tests/refs/06-simulate-02.png", mode='rb' ).read()
