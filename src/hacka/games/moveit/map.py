@@ -99,11 +99,36 @@ class Map( tiled.Map ):
         self._mobiles[owner][ mobile.identifier()-1 ]= iTo
         return iTo
     
+    def tileFromPod(self, aPod):
+        tile= tiled.Tile()
+        flags= aPod.flags()
+        tile._num= flags[0]
+        tile._matter= flags[1]
+        tile._adjacencies= flags[2:]
+        # Convert Values:
+        vals= aPod.values()
+        xs= [ vals[i] for i in range( 0, len(vals), 2 ) ]
+        ys= [ vals[i] for i in range( 1, len(vals), 2 ) ]
+        tile._center= tiled.Float2( xs[0], ys[0] )
+        tile._points= [ tiled.Float2(x, y) for x, y in zip(xs[1:], ys[1:]) ]
+        # Load pices:
+        tile._pieces= [ Mobile().fromPod(p) for p in aPod.children() ]
+        return tile
+
     def fromPod(self, aPod):
-        super().fromPod(aPod)
+        self._tiles= [None]
+        self._shapes= []
+        self._size= 0
+        kids= aPod.children()
+        for kid in kids :
+            if kid.family() == "Shape" :
+                self.addShape( tiled.Shape().fromPod( kid ) )
+            if kid.family() == "Tile" :
+                self.addTile( self.tileFromPod( kid ) )
         # Update cros knoldge:
         for t in range( 1, self.size()+1 ):
             for p in range( len( self.tile(t)._pieces ) ) :
                 iPlayer= self.tile(t)._pieces[p].flag(1)
                 iRobot= self.tile(t)._pieces[p].flag(2)
                 self._mobiles[iPlayer][iRobot-1]= t
+        return self

@@ -80,7 +80,10 @@ missions - 0 0 0 4 :
 
     player.wakeUp( 2, 2, configPod )
 
-    assert str(configPod) == str(player._model.asPod())
+    assert str(configPod) == str(player._model.asPod()) 
+
+    assert type(player._model.mobile(1, 0)) == mi.Mobile
+    assert player._model.mobileMission(1, 0) == 0
 
     assert( len( player._model._map._mobiles ) == 3 )
     assert( len( player._model._map._mobiles[1] ) == 1 )
